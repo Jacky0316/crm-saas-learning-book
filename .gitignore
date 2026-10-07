@@ -1,0 +1,7 @@
+# 白名单模式：仅跟踪本仓库相关文件
+/*
+!/.gitignore
+!/README.md
+!/CRM-SaaS-产品学习书.html
+!/CRM-SaaS-产品学习书-方案.md
+!/research

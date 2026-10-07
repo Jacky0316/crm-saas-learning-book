@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM SaaS 产品学习书 · 纷享销客 × 销售易</title>
+<style>
+/* ============ 变量与基础 ============ */
+:root{
+  --paper:#f6f2e8; --card:#fffdf6; --card2:#fbf8ef;
+  --ink:#26313d; --ink-strong:#1a232d; --muted:#7a8290;
+  --navy:#24466e; --navy-deep:#182f4d;
+  --line:#e4dcc9; --line2:#d3c9b0; --shadow:rgba(60,50,20,.08);
+  --fx:#d84f2a; --fx-deep:#b03c1d; --fx-bg:#fbeee8; --fx-bg2:#f7e2d8;
+  --neo:#2c63d8; --neo-deep:#1e46a3; --neo-bg:#eaf0fc; --neo-bg2:#dde8fa;
+  --ok:#2e7d4f; --ok-bg:#e8f3ec; --warn:#a8781f; --warn-bg:#f9f1dd; --third:#6f7680; --third-bg:#eeeff1;
+  --gold:#a8842f;
+  --serif:Georgia,"Times New Roman","STZhongsong","SimSun","Songti SC",serif;
+  --sans:"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",sans-serif;
+  --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  --side-w:280px;
+}
+html.dark{
+  --paper:#151a21; --card:#1e242d; --card2:#232a34;
+  --ink:#dfe3e8; --ink-strong:#f4f6f8; --muted:#8f99a5;
+  --navy:#9db8d9; --navy-deep:#c6d7ec;
+  --line:#2b323d; --line2:#39424f; --shadow:rgba(0,0,0,.35);
+  --fx:#f07a52; --fx-deep:#f5977a; --fx-bg:#2e211c; --fx-bg2:#3a281f;
+  --neo:#6f9df0; --neo-deep:#9cbdf5; --neo-bg:#1b2334; --neo-bg2:#202b42;
+  --ok:#63b78c; --ok-bg:#182a20; --warn:#d3a648; --warn-bg:#2c2517; --third:#9aa2ab; --third-bg:#242830;
+  --gold:#c9a557;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);color:var(--ink);background:var(--paper);
+  background-image:
+    radial-gradient(ellipse 1200px 700px at 85% -10%, rgba(168,132,47,.055), transparent 60%),
+    radial-gradient(ellipse 900px 600px at -10% 30%, rgba(36,70,110,.05), transparent 55%),
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(120,100,60,.012) 2px 4px);
+  line-height:1.75;font-size:15.5px;
+}
+::selection{background:rgba(168,132,47,.28)}
+a{color:var(--navy);text-decoration:none;border-bottom:1px dotted var(--navy)}
+a:hover{color:var(--gold)}
+button{font-family:inherit;cursor:pointer}
+h2,h3,h4,.serif{font-family:var(--serif);color:var(--ink-strong)}
+p{margin:0 0 12px}
+strong{color:var(--ink-strong)}
+
+/* ============ 顶部进度条与顶栏 ============ */
+#bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;
+  background:linear-gradient(90deg,var(--fx) 0 50%,var(--neo) 50% 100%);}
+#top{position:fixed;top:0;left:0;right:0;height:52px;z-index:50;
+  display:flex;align-items:center;gap:14px;padding:0 18px;
+  background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+#top .crumb{font-family:var(--serif);font-weight:700;font-size:15px;color:var(--ink-strong);letter-spacing:.5px;white-space:nowrap}
+#top .crumb small{color:var(--muted);font-weight:400;margin-left:8px;font-family:var(--sans);font-size:12px}
+#menuBtn{display:none;background:none;border:1px solid var(--line2);border-radius:6px;color:var(--ink);font-size:16px;padding:3px 10px}
+#themeBtn{margin-left:auto;background:none;border:1px solid var(--line2);border-radius:6px;color:var(--ink);font-size:14px;padding:3px 9px}
+.seg{display:flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:var(--card)}
+.seg button{border:none;background:none;padding:5px 13px;font-size:12.5px;color:var(--muted);position:relative;letter-spacing:.5px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{color:#fff}
+.seg button[data-mode="fx"].on{background:var(--fx)}
+.seg button[data-mode="neo"].on{background:var(--neo)}
+.seg button[data-mode="both"].on{background:var(--navy)}
+
+/* ============ 布局 ============ */
+.shell{display:flex;max-width:1440px;margin:0 auto;padding-top:52px}
+#side{width:var(--side-w);flex:0 0 var(--side-w);position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;
+  padding:22px 16px 40px 22px;border-right:1px solid var(--line);scrollbar-width:thin}
+#main{flex:1;min-width:0;padding:34px 40px 90px}
+.book{max-width:880px;margin:0 auto}
+
+/* ============ 侧栏 ============ */
+.cover-mini{border:1.5px solid var(--ink-strong);border-radius:4px;padding:14px 14px 12px;background:var(--card);margin-bottom:18px;position:relative}
+.cover-mini::after{content:"";position:absolute;inset:4px;border:1px solid var(--line2);border-radius:2px;pointer-events:none}
+.cover-mini .t{font-family:var(--serif);font-weight:700;font-size:16.5px;color:var(--ink-strong);letter-spacing:1px}
+.cover-mini .s{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+.cover-mini .dotfx,.cover-mini .dotneo{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 3px 0 0;vertical-align:middle}
+.cover-mini .dotfx{background:var(--fx)} .cover-mini .dotneo{background:var(--neo)}
+.nav{list-style:none}
+.nav>li{margin-bottom:2px}
+.nav a{display:block;border:none;padding:6px 9px;border-radius:6px;color:var(--ink);font-size:13px;line-height:1.45}
+.nav a:hover{background:var(--card);color:var(--ink-strong)}
+.nav a.act{background:var(--navy);color:#fff}
+html.dark .nav a.act{color:#141c26;background:var(--navy)}
+.nav .no{display:inline-block;width:26px;font-family:var(--serif);font-weight:700;color:var(--gold)}
+.nav a.act .no{color:inherit}
+.nav .sub{list-style:none;margin:1px 0 6px;padding-left:26px;border-left:1px dashed var(--line2);margin-left:12px}
+.nav .sub a{font-size:12px;color:var(--muted);padding:3px 8px}
+.legend{margin-top:20px;padding-top:14px;border-top:1px dashed var(--line2);font-size:11.5px;color:var(--muted);line-height:2}
+
+/* ============ 章节结构 ============ */
+.chapter{padding-top:26px;margin-bottom:26px;scroll-margin-top:70px}
+.ch-head{border-bottom:3px double var(--line2);padding-bottom:18px;margin-bottom:26px;position:relative}
+.kicker{font-size:12px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:6px;font-family:var(--serif)}
+.ch-head h2{font-size:31px;letter-spacing:1.5px;line-height:1.3}
+.ch-head .ch-no{position:absolute;right:0;top:0;font-family:var(--serif);font-size:64px;font-weight:700;color:transparent;
+  -webkit-text-stroke:1.5px var(--line2);line-height:1;user-select:none}
+.ch-head .lede{color:var(--muted);font-size:14px;margin-top:8px;max-width:640px}
+.goals{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);
+  border-radius:6px;padding:12px 16px;margin:18px 0 6px}
+.goals b{font-family:var(--serif);color:var(--gold);white-space:nowrap;font-size:14px;letter-spacing:2px}
+.goals ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink)}
+.goals li{margin:2px 0}
+.recap{margin:30px 0 8px;background:var(--card2);border:1px dashed var(--line2);border-radius:8px;padding:14px 18px}
+.recap h4{font-size:15px;margin-bottom:8px;color:var(--navy);letter-spacing:1px}
+.recap ul{padding-left:20px;font-size:13.5px}
+.recap li{margin:4px 0}
+h3{font-size:21.5px;margin:34px 0 12px;letter-spacing:1px;display:flex;align-items:baseline;gap:10px}
+h3 .sn{font-size:13px;color:var(--gold);font-family:var(--serif);letter-spacing:1px}
+h4{font-size:16.5px;margin:20px 0 8px}
+.tag-fx,.tag-neo,.tag-both{display:inline-block;font-size:11px;color:#fff;border-radius:4px;padding:1px 7px;letter-spacing:1px;vertical-align:2px;margin-left:8px;font-family:var(--sans);font-weight:400}
+.tag-fx{background:var(--fx)} .tag-neo{background:var(--neo)} .tag-both{background:var(--navy)}
+
+/* ============ 可信度角标 ============ */
+.mk{font-style:normal;font-size:11px;border-radius:4px;padding:0 5px;margin-left:3px;white-space:nowrap;vertical-align:2px;font-family:var(--sans)}
+.mk.ok{color:var(--ok);background:var(--ok-bg)}
+.mk.warn{color:var(--warn);background:var(--warn-bg)}
+.mk.third{color:var(--third);background:var(--third-bg)}
+
+/* ============ 图示 ============ */
+.fig{margin:22px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 14px 10px;box-shadow:0 2px 10px var(--shadow)}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{text-align:center;font-size:12.5px;color:var(--muted);margin-top:8px;font-family:var(--serif)}
+.fig figcaption b{color:var(--ink)}
+/* SVG 通用样式类 */
+.sg-box{fill:var(--card2);stroke:var(--line2);stroke-width:1.2;rx:8}
+.sg-box2{fill:var(--card);stroke:var(--line2);stroke-width:1.2}
+.sg-lbl{font:600 13px var(--sans);fill:var(--ink-strong)}
+.sg-lbl-s{font:12px var(--sans);fill:var(--ink)}
+.sg-sub{font:11px var(--sans);fill:var(--muted)}
+.sg-sub2{font:10.5px var(--sans);fill:var(--muted)}
+.sg-h1{font:700 17px var(--serif);fill:var(--ink-strong);letter-spacing:2px}
+.sg-arr{stroke:var(--muted);stroke-width:1.4;fill:none}
+.sg-arrd{stroke:var(--line2);stroke-width:1.2;fill:none;stroke-dasharray:5 4}
+.fx-st{stroke:var(--fx)} .neo-st{stroke:var(--neo)} .navy-st{stroke:var(--navy)}
+.fx-f{fill:var(--fx)} .neo-f{fill:var(--neo)} .navy-f{fill:var(--navy)}
+.fx-b{fill:var(--fx-bg);stroke:var(--fx);stroke-width:1.3}
+.neo-b{fill:var(--neo-bg);stroke:var(--neo);stroke-width:1.3}
+.navy-b{fill:var(--neo-bg2);stroke:var(--navy);stroke-width:1.3}
+.gold-b{fill:var(--warn-bg);stroke:var(--gold);stroke-width:1.3}
+.sg-band{fill:var(--card2);stroke:var(--line2);stroke-width:1.2}
+.sg-lane{stroke:var(--line);stroke-width:1}
+.sg-head-f{fill:var(--navy)}
+
+/* ============ 双产品对照卡 ============ */
+.duo{margin:20px 0;border:1px solid var(--line2);border-radius:10px;background:var(--card);overflow:hidden;box-shadow:0 2px 10px var(--shadow)}
+.duo-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--card2)}
+.duo-title{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink-strong)}
+.duo-q{font-size:12px;color:var(--muted)}
+.duo-body{display:grid;grid-template-columns:1fr 1fr}
+.duo-body>.pane{padding:14px 16px;font-size:13.5px}
+.duo-body>.pane+.pane{border-left:1px solid var(--line)}
+.pane .ptag{display:inline-block;font-size:11px;color:#fff;border-radius:4px;padding:1px 8px;margin-bottom:8px;letter-spacing:1px}
+.pane.fx .ptag{background:var(--fx)} .pane.neo .ptag{background:var(--neo)}
+.pane.fx{background:linear-gradient(180deg,var(--fx-bg),transparent 70%)}
+.pane.neo{background:linear-gradient(180deg,var(--neo-bg),transparent 70%)}
+.pane ul{padding-left:17px;margin:0}
+.pane li{margin:4px 0}
+.duo-note{padding:10px 16px;border-top:1px dashed var(--line2);background:var(--card2);font-size:12.5px;color:var(--muted)}
+.duo-note b{color:var(--gold);font-family:var(--serif)}
+/* 视图切换过滤 */
+body.mode-fx [data-p="neo"],body.mode-neo [data-p="fx"]{display:none!important}
+body.mode-fx [data-p="fx"],body.mode-neo [data-p="neo"]{box-shadow:inset 0 0 0 2px currentColor;border-radius:4px}
+body.mode-fx .duo-body,body.mode-neo .duo-body{grid-template-columns:1fr}
+body.mode-fx .duo-body>.pane+.pane,body.mode-neo .duo-body>.pane+.pane{border-left:none}
+.hint-single{display:none;margin:8px 2px;font-size:12px;color:var(--muted)}
+body.mode-fx .hint-fx,body.mode-neo .hint-neo{display:block}
+
+/* ============ 对象卡 ============ */
+.objgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.objcard{border:1px solid var(--line2);border-radius:10px;background:var(--card);overflow:hidden}
+.objcard .oh{display:flex;align-items:baseline;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--card2)}
+.objcard .oen{font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--gold)}
+.objcard .oh h4{margin:0;font-size:15.5px}
+.objcard .ob{padding:10px 14px;font-size:12.8px}
+.objcard .ob dl{display:grid;grid-template-columns:64px 1fr;gap:4px 8px}
+.objcard dt{color:var(--muted);font-size:11.5px}
+.objcard dd{margin:0}
+.objcard.full{grid-column:1/-1}
+
+/* ============ 表格 ============ */
+.tbl{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 1px 6px var(--shadow)}
+.tbl th{background:var(--navy);color:#fff;font-weight:600;padding:8px 12px;text-align:left;font-size:12.5px;letter-spacing:.5px}
+html.dark .tbl th{color:var(--navy-deep)}
+.tbl td{border-bottom:1px solid var(--line);padding:8px 12px;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:nth-child(even) td{background:var(--card2)}
+.tbl .fx-c{color:var(--fx-deep);font-weight:600} .tbl .neo-c{color:var(--neo-deep);font-weight:600}
+
+/* ============ 术语与弹层 ============ */
+.term{background:none;border:none;border-bottom:1px dashed var(--gold);color:var(--ink);font:inherit;padding:0 1px}
+.term:hover{color:var(--gold);background:var(--warn-bg)}
+#pop{position:absolute;z-index:70;max-width:330px;background:var(--ink-strong);color:var(--paper);border-radius:8px;
+  padding:10px 14px;font-size:12.5px;line-height:1.7;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+html.dark #pop{background:var(--card);color:var(--ink);border:1px solid var(--line2)}
+#pop b{color:var(--gold);font-family:var(--serif)}
+#pop::after{content:"";position:absolute;border:6px solid transparent}
+
+/* ============ 来源 ============ */
+.src{margin:14px 0 0;font-size:12px}
+.src summary{cursor:pointer;color:var(--muted);user-select:none}
+.src summary:hover{color:var(--gold)}
+.src ul{margin:6px 0 0;padding-left:18px;color:var(--muted)}
+.src li{margin:3px 0}
+.src a{color:var(--muted);border-bottom-color:var(--line2);word-break:break-all}
+.src a:hover{color:var(--gold)}
+
+/* ============ 其他组件 ============ */
+.callout{border:1px solid var(--line2);border-left:4px solid var(--navy);background:var(--card);border-radius:6px;padding:12px 16px;margin:16px 0;font-size:13.5px}
+.callout.gold{border-left-color:var(--gold)}
+.callout.fx{border-left-color:var(--fx)} .callout.neo{border-left-color:var(--neo)}
+.callout b.t{font-family:var(--serif);color:var(--navy);letter-spacing:1px}
+.formula{font-family:var(--mono);font-size:13px;background:var(--ink-strong);color:#e8e2d0;border-radius:10px;padding:16px 20px;margin:18px 0;line-height:2;overflow-x:auto;white-space:pre}
+html.dark .formula{background:var(--card);color:var(--ink);border:1px solid var(--line2)}
+.formula em{color:var(--gold);font-style:normal}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.mini{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:12px 14px;font-size:13px}
+.mini h5{font-family:var(--serif);font-size:14px;color:var(--ink-strong);margin-bottom:6px;letter-spacing:.5px}
+.mini ul{padding-left:17px;margin:0;font-size:12.8px}
+.mini li{margin:3px 0}
+.divider{border:none;border-top:1px dashed var(--line2);margin:26px 0}
+.steps{list-style:none;counter-reset:st;margin:14px 0}
+.steps li{counter-increment:st;position:relative;padding:0 0 14px 44px;font-size:13.5px}
+.steps li::before{content:counter(st,decimal-leading-zero);position:absolute;left:0;top:1px;width:30px;height:30px;border-radius:50%;
+  border:1.5px solid var(--navy);color:var(--navy);font-family:var(--serif);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;background:var(--card)}
+.steps li::after{content:"";position:absolute;left:15px;top:33px;bottom:2px;border-left:1px dashed var(--line2)}
+.steps li:last-child::after{display:none}
+.steps b{color:var(--ink-strong)}
+
+/* ============ 封面 ============ */
+.hero{padding:46px 0 30px;border-bottom:3px double var(--line2);margin-bottom:30px;position:relative}
+.hero .over{font-family:var(--serif);letter-spacing:6px;color:var(--gold);font-size:13px;margin-bottom:14px}
+.hero h1{font-family:var(--serif);font-size:44px;letter-spacing:4px;color:var(--ink-strong);line-height:1.35}
+.hero .sub{font-family:var(--serif);font-size:18px;color:var(--navy);margin-top:10px;letter-spacing:2px}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.hero .meta span{font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:20px;padding:2px 12px;background:var(--card)}
+.hero .how{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
+
+/* ============ 附录 ============ */
+.gloss-group{margin:18px 0}
+.gloss-group h4{color:var(--navy);letter-spacing:1px;border-bottom:1px dashed var(--line2);padding-bottom:6px}
+.gloss{display:grid;grid-template-columns:1fr 1fr;gap:0 26px;margin-top:8px}
+.gloss .gi{padding:7px 2px;border-bottom:1px dotted var(--line);font-size:13px}
+.gloss .gi b{font-family:var(--serif);color:var(--ink-strong)}
+.gloss .gi .en{color:var(--gold);font-style:italic;font-size:12px;font-family:var(--serif);margin-left:6px}
+.gloss .gi p{margin:2px 0 0;color:var(--muted);font-size:12.5px}
+.chk{list-style:none;margin:14px 0}
+.chk li{margin:8px 0;font-size:13.5px}
+.chk input{margin-right:9px;accent-color:var(--navy);width:15px;height:15px;vertical-align:-2px}
+.chk li.done label{color:var(--muted);text-decoration:line-through}
+
+footer{border-top:1px solid var(--line2);margin-top:40px;padding-top:18px;font-size:12px;color:var(--muted);text-align:center;line-height:2}
+
+/* ============ 动效 ============ */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+/* ============ 响应式 ============ */
+@media (max-width:1020px){
+  #side{position:fixed;left:0;top:52px;z-index:45;background:var(--paper);transform:translateX(-105%);transition:transform .3s;box-shadow:4px 0 20px var(--shadow)}
+  body.side-open #side{transform:none}
+  #menuBtn{display:block}
+  #main{padding:26px 18px 70px}
+  .hero h1{font-size:32px}
+  .objgrid,.grid2,.gloss,.hero .how{grid-template-columns:1fr}
+  .duo-body{grid-template-columns:1fr!important}
+  .duo-body>.pane+.pane{border-left:none;border-top:1px solid var(--line)}
+  .ch-head .ch-no{font-size:44px}
+  #top .crumb small{display:none}
+  .seg button{padding:5px 8px}
+}
+</style>
+</head>
+<body class="mode-both">
+<div id="bar"></div>
+<header id="top">
+  <button id="menuBtn" aria-label="目录">☰</button>
+  <div class="crumb">CRM SaaS 产品学习书<small>纷享销客 × 销售易</small></div>
+  <div class="seg" id="seg" title="产品视角切换">
+    <button data-mode="fx">纷享销客</button>
+    <button data-mode="both" class="on">双产品对照</button>
+    <button data-mode="neo">销售易</button>
+  </div>
+  <button id="themeBtn" title="深浅色切换">◐ 深浅</button>
+</header>
+
+<div class="shell">
+<nav id="side">
+  <div class="cover-mini">
+    <div class="t">CRM SaaS 产品学习书</div>
+    <div class="s">以 <span class="dotfx"></span>纷享销客 × <span class="dotneo"></span>销售易 为双案例<br>系统学习商业化 CRM 的搭建与设计</div>
+  </div>
+  <ol class="nav" id="nav">
+    <li><a href="#c0"><span class="no">00</span>导读与学习方法</a>
+      <ul class="sub"><li><a href="#c0-why">为什么选这两家</a></li><li><a href="#c0-map">术语地图</a></li></ul></li>
+    <li><a href="#c1"><span class="no">01</span>CRM 的核心业务</a>
+      <ul class="sub"><li><a href="#c1-what">CRM 经营什么</a></li><li><a href="#c1-pos">双雄定位</a></li><li><a href="#c1-biz">商业化模式</a></li></ul></li>
+    <li><a href="#c2"><span class="no">02</span>系统的架构</a>
+      <ul class="sub"><li><a href="#c2-six">六层架构</a></li><li><a href="#c2-meta">元数据驱动</a></li><li><a href="#c2-acl">权限架构</a></li><li><a href="#c2-ai">AI 原生架构</a></li></ul></li>
+    <li><a href="#c3"><span class="no">03</span>核心业务流程</a>
+      <ul class="sub"><li><a href="#c3-l2c">L2C 主流程</a></li><li><a href="#c3-after">订单后延伸</a></li><li><a href="#c3-svc">服务流程</a></li><li><a href="#c3-channel">渠道流程</a></li></ul></li>
+    <li><a href="#c4"><span class="no">04</span>核心功能详解</a>
+      <ul class="sub"><li><a href="#c4-obj">对象模型</a></li><li><a href="#c4-sales">销售域</a></li><li><a href="#c4-deal">交易域</a></li><li><a href="#c4-mkt">营销域</a></li><li><a href="#c4-svc">服务域</a></li><li><a href="#c4-prm">渠道域</a></li><li><a href="#c4-bi">分析与 AI</a></li></ul></li>
+    <li><a href="#c5"><span class="no">05</span>生态的打造方式</a>
+      <ul class="sub"><li><a href="#c5-map">生态四层</a></li><li><a href="#c5-open">开放平台</a></li><li><a href="#c5-super">超级 App 路线</a></li><li><a href="#c5-net">上下游网络</a></li></ul></li>
+    <li><a href="#c6"><span class="no">06</span>标准化设计思路与具体设计</a>
+      <ul class="sub"><li><a href="#c6-spec">标准化光谱</a></li><li><a href="#c6-design">九项具体设计</a></li><li><a href="#c6-cn">本土化增量</a></li></ul></li>
+    <li><a href="#appx"><span class="no">附录</span>术语 · 对照 · 来源 · 自测</a>
+      <ul class="sub"><li><a href="#gl">A 术语表</a></li><li><a href="#ct">B 功能对照总表</a></li><li><a href="#srcs">C 来源清单</a></li><li><a href="#chk">D 自测清单</a></li></ul></li>
+  </ol>
+  <div class="legend">
+    可信度角标：<span class="mk ok">✅ 一手官方</span> <span class="mk warn">⚠️ 口径存疑</span> <span class="mk third">❓ 第三方</span><br>
+    点击正文中的<em style="color:var(--gold)">虚线词</em>查看术语解释。
+  </div>
+</nav>
+
+<main id="main">
+<div class="book">
+
+<!-- ================= 封面 ================= -->
+<section class="hero reveal in">
+  <div class="over">产品学习手册 · STUDY HANDBOOK</div>
+  <h1>CRM SaaS 产品学习书</h1>
+  <div class="sub">一款商业化、标准化的 CRM SaaS 是如何搭建与设计的</div>
+  <div class="meta">
+    <span>双案例：纷享销客 FXiaoke × 销售易 Neocrm</span>
+    <span>依据：官方帮助中心 / 用户手册 / 开放平台文档</span>
+    <span>2026 年 10 月 · v1.0</span>
+  </div>
+  <div class="how">
+    <div class="mini"><h5>怎么读 · 概念驱动</h5>全书按"概念 + 双产品对照举证"组织：先建立 CRM 通用骨架，再看两家产品各自如何实现，避免"产品说明书式"阅读。</div>
+    <div class="mini"><h5>怎么读 · 三种视角</h5>右上角切换「纷享销客 / 双产品对照 / 销售易」三种视角，可专学一家，也可逐条对比。</div>
+    <div class="mini"><h5>怎么读 · 一条主线</h5>全书记忆主线：<em style="color:var(--gold);font-style:normal">标准对象 → L2C 流程 → 配置层 → 版本分层 → 行业模板 → 生态扩展</em>，每章回到这条公式。</div>
+  </div>
+</section>
+
+<!-- ================= 第0章 导读 ================= -->
+<section class="chapter reveal" id="c0">
+  <header class="ch-head">
+    <div class="kicker">Preface · 导读</div>
+    <h2>第 0 章 · 导读与学习方法</h2>
+    <div class="ch-no">00</div>
+    <p class="lede">在进入正文前，先回答三个问题：为什么用这两家产品当教材？CRM 领域有哪些必懂概念？本书的事实从哪里来、可信度如何标注？</p>
+  </header>
+
+  <h3 id="c0-why"><span class="sn">0.1</span>为什么选"纷享销客 × 销售易"当教材</h3>
+  <p>这两家是中国本土 CRM SaaS 的两个代表性样本，而且路线截然不同——把它们放在一起看，恰好覆盖了"一款标准化 CRM SaaS"的主要设计选择空间：</p>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">两个样本 · 两条路线</span><span class="duo-q">一个走"连接与平台"，一个走"一体化与数据"</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客 FXiaoke</span>
+        <ul>
+          <li>IDC 口径<strong>连续 6 年中国本土 CRM SaaS「份额+增速」双第一</strong>（2025H1 市占近 10%、同比约 +18%）<span class="mk third">❓转引</span>；官网自称 7000+ 大中型企业客户<span class="mk warn">⚠️口径不一</span>。</li>
+          <li>路线：<strong>连接型 CRM</strong>——连接员工、客户、渠道伙伴与系统，独有的「企业互联/集团 1+N」做跨租户上下游网络。</li>
+          <li>组织背景：IDG、金蝶、钟鼎资本等分散持股，保持独立。</li>
+        </ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易 Neocrm</span>
+        <ul>
+          <li>官方口径<strong>连续十年唯一入选 Gartner SFA 魔力象限的中国 CRM 厂商</strong><span class="mk warn">⚠️次数口径待核</span>；自称 6000+ 大中型企业、数百家 500 强客户。</li>
+          <li>路线：<strong>营销服一体化 + PaaS + Data Cloud</strong>，对象模型与数据平台最接近 Salesforce 全家桶。</li>
+          <li>组织背景：<strong>腾讯控股（持股超 50%，2025-02）</strong>，深度绑定企业微信 / 腾讯云 / 混元大模型。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：同为中大 B2B 客群，一个把"跨企业连接"做成架构级卖点，一个把"数据与 AI 平台"做成架构级卖点——这正是第 2 章架构对比的伏笔。</div>
+  </div>
+  <p>2025-2026 年，两家都完成了向「AI 原生 CRM」的叙事升级：纷享发布 <button class="term" data-term="sharehive">ShareHive 蜂巢</button>与 Agentic CRM，销售易发布 <button class="term" data-term="neoagent">NeoAgent 2.0</button>——AI 从附加功能升格为平台层，本书第 2、4、6 章都会专门处理这条新轴线。</p>
+
+  <h3 id="c0-map"><span class="sn">0.2</span>CRM 术语地图：10 分钟建立坐标系</h3>
+  <p>读 CRM 文档最常见的困难是行话密度。先建立下面这张小地图（加虚线的词都可以点击查看解释，全书通用）：</p>
+  <figure class="fig">
+    <svg viewBox="0 0 960 320" role="img" aria-label="CRM 术语地图">
+      <defs><marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m-f"/></marker></defs>
+      <style>.m-f{fill:var(--muted)}</style>
+      <rect x="380" y="24" width="200" height="52" rx="10" class="sg-box" style="fill:var(--navy)"/>
+      <text x="480" y="48" text-anchor="middle" class="sg-lbl" style="fill:#fff">CRM 客户关系管理</text>
+      <text x="480" y="66" text-anchor="middle" class="sg-sub" style="fill:#cfd8e4">经营"客户资产 + 销售过程 + 回款兑现"</text>
+      <line x1="480" y1="76" x2="480" y2="104" class="sg-arr" marker-end="url(#ar0)"/>
+      <rect x="30" y="110" width="200" height="86" rx="10" class="fx-b"/>
+      <text x="130" y="136" text-anchor="middle" class="sg-lbl">SFA 销售自动化</text>
+      <text x="130" y="156" text-anchor="middle" class="sg-sub">线索 / 客户 / 商机的</text>
+      <text x="130" y="172" text-anchor="middle" class="sg-sub">过程管理核心</text>
+      <rect x="268" y="110" width="200" height="86" rx="10" class="neo-b"/>
+      <text x="368" y="136" text-anchor="middle" class="sg-lbl">L2C 线索到回款</text>
+      <text x="368" y="156" text-anchor="middle" class="sg-sub">Lead to Cash：</text>
+      <text x="368" y="172" text-anchor="middle" class="sg-sub">端到端主业务流程</text>
+      <rect x="506" y="110" width="200" height="86" rx="10" class="sg-box"/>
+      <text x="606" y="136" text-anchor="middle" class="sg-lbl">三大外延云</text>
+      <text x="606" y="156" text-anchor="middle" class="sg-sub">营销（获客）· 服务（售后）</text>
+      <text x="606" y="172" text-anchor="middle" class="sg-sub">渠道 / PRM（伙伴）</text>
+      <rect x="744" y="110" width="186" height="86" rx="10" class="gold-b"/>
+      <text x="837" y="136" text-anchor="middle" class="sg-lbl">平台层</text>
+      <text x="837" y="156" text-anchor="middle" class="sg-sub">PaaS 低代码 · 元数据</text>
+      <text x="837" y="172" text-anchor="middle" class="sg-sub">权限 · 集成 · BI · AI</text>
+      <line x1="230" y1="153" x2="262" y2="153" class="sg-arr" marker-end="url(#ar0)"/>
+      <line x1="468" y1="153" x2="500" y2="153" class="sg-arr" marker-end="url(#ar0)"/>
+      <line x1="706" y1="153" x2="738" y2="153" class="sg-arr" marker-end="url(#ar0)"/>
+      <rect x="30" y="228" width="900" height="66" rx="10" class="sg-box"/>
+      <text x="60" y="254" class="sg-lbl-s">高频行话速览</text>
+      <text x="60" y="276" class="sg-sub2"><tspan class="sg-lbl-s">公海池</tspan> 销售资源共享与回收机制 ｜ <tspan class="sg-lbl-s">CPQ</tspan> 报价配置 ｜ <tspan class="sg-lbl-s">BOM</tspan> 产品配置清单 ｜ <tspan class="sg-lbl-s">SLA</tspan> 服务等级协议 ｜ <tspan class="sg-lbl-s">PRM</tspan> 伙伴关系管理 ｜ <tspan class="sg-lbl-s">SCRM</tspan> 社交化客户运营 ｜ <tspan class="sg-lbl-s">CDP</tspan> 客户数据平台 ｜ <tspan class="sg-lbl-s">RBAC/ABAC</tspan> 权限模型 ｜ <tspan class="sg-lbl-s">多租户</tspan> SaaS 架构基座</text>
+    </svg>
+    <figcaption><b>图 0-1</b> ｜ CRM 术语地图：SFA 是内核，L2C 是主流程，营销/服务/渠道是三大外延，平台层承载一切配置</figcaption>
+  </figure>
+
+  <h3><span class="sn">0.3</span>信息来源与可信度标注</h3>
+  <p>本书事实全部来自三份一手调研笔记（纷享销客官网 21 页 + 帮助中心 22 频道、销售易官网 14 页 + 官方用户手册 PDF 两份、横切对比笔记），书中用三级角标标注可信度：</p>
+  <p style="text-align:center"><span class="mk ok">✅ 一手官方文档可查</span>　<span class="mk warn">⚠️ 官方页面但口径不一/已截断</span>　<span class="mk third">❓ 第三方转引，待核实</span></p>
+  <div class="callout"><b class="t">诚实的边界</b>：销售易的 help / open 文档站在调研环境无法访问（TLS 重置），其部分结论由官方手册 PDF、自助服务站文档目录与官方 CLI/SDK 交叉补齐；两家公开的 ISV 应用市场目录均未见到、销售易官方定价不公示——涉及处一律标 <span class="mk third">❓</span>，不做杜撰。</div>
+  <div class="recap"><h4>本章要点</h4><ul>
+    <li>纷享销客 = "连接型 + 平台化"样本（跨租户企业互联）；销售易 = "一体化 + 数据/AI 平台"样本（腾讯系）。两条路线合起来覆盖 CRM SaaS 的主要设计空间。</li>
+    <li>记忆坐标系：SFA 内核 → L2C 主流程 → 营销/服务/渠道三外延 → 平台层承载配置。</li>
+    <li>全书事实有三级可信度标注，不确定的信息明确标出。</li>
+  </ul></div>
+  <details class="src"><summary>本节来源</summary><ul>
+    <li>纷享销客官网（定位/产品矩阵）：https://www.fxiaoke.com/</li>
+    <li>销售易官网（定位/NeoAgent/公司介绍）：https://www.xiaoshouyi.com/ 、/about-us/companyinfo-new</li>
+    <li>IDC 报告转引（界面新闻 2026、纷享官网引用）：https://www.jiemian.com</li>
+    <li>腾讯控股销售易（东方财富/中国经营报 2025-02，二手）：https://wap.eastmoney.com</li>
+  </ul></details>
+</section>
+
+<!-- ================= 第1章 核心业务 ================= -->
+<section class="chapter reveal" id="c1">
+  <header class="ch-head">
+    <div class="kicker">Part 1 · 核心业务</div>
+    <h2>第 1 章 · CRM 的核心业务</h2>
+    <div class="ch-no">01</div>
+    <p class="lede">先回答最根本的问题：CRM 这门生意，到底在经营什么？两家公司如何把它包装成产品矩阵并卖出去？</p>
+  </header>
+  <div class="goals"><b>学习目标</b><ul>
+    <li>能用一句话说清 CRM 的业务本质，并画出"营销-销售-服务-渠道"四域全景；</li>
+    <li>能对比两家产品的定位、客群与行业打法；</li>
+    <li>能拆解 CRM SaaS 的商业化公式：订阅 × 版本分层 × 版块加购 × 实施费。</li>
+  </ul></div>
+
+  <h3 id="c1-what"><span class="sn">1.1</span>CRM 到底经营什么</h3>
+  <p>B2B 交易的特点是<strong>链条长、角色多、周期久</strong>：一条广告线索要经过市场、销售、商务、财务、售后多个角色，几个月到一年才变成回款。CRM 的业务本质，就是把这条链路上的三样东西数字化并管理起来：</p>
+  <div class="grid2">
+    <div class="mini"><h5>① 客户资产（Account 360）</h5>客户与联系人不再是销售个人手里的 Excel，而是企业的数据资产：查重、查工商、客户树、权力地图（决策链），人走了，资产留下。</div>
+    <div class="mini"><h5>② 销售过程（Pipeline）</h5>把"感觉能成"变成可管理的阶段：<button class="term" data-term="oppo">商机</button>分阶段推进、每阶段有进入/完成条件、漏斗与赢率可度量、预测有依据。</div>
+    <div class="mini"><h5>③ 回款兑现（Cash）</h5>中国版 CRM 特有的重心：合同、订单、<button class="term" data-term="huikuan">回款</button>、开票、收入确认——"签了合同不算成，钱到账才算成"。</div>
+    <div class="mini"><h5>外延：把链路两端也连起来</h5>往前连营销（获客），往后连服务（复购），往外连渠道伙伴（分销）——这就是"营销服一体化 + 渠道"的产品矩阵由来。</div>
+  </div>
+  <figure class="fig">
+    <svg viewBox="0 0 960 470" role="img" aria-label="CRM 业务全景图">
+      <defs><marker id="ar1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m1a"/></marker>
+      <marker id="ar1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m1b"/></marker></defs>
+      <style>.m1a{fill:var(--gold)}.m1b{fill:var(--muted)}</style>
+      <!-- 客户旅程箭头 -->
+      <text x="480" y="26" text-anchor="middle" class="sg-sub">客 户 生 命 周 世 主 线</text>
+      <line x1="80" y1="44" x2="890" y2="44" class="sg-arr" stroke-width="2" marker-end="url(#ar1a)" style="stroke:var(--gold)"/>
+      <g font-size="12" class="sg-lbl-s" text-anchor="middle">
+        <text x="110" y="36">获客</text><text x="300" y="36">成交</text><text x="500" y="36">回款</text><text x="690" y="36">售后</text><text x="870" y="36">复购/增购</text>
+      </g>
+      <!-- 四域 -->
+      <rect x="28" y="66" width="212" height="196" rx="12" class="sg-box"/>
+      <rect x="28" y="66" width="212" height="34" rx="12" class="sg-head-f"/><rect x="28" y="88" width="212" height="12" class="sg-head-f"/>
+      <text x="134" y="89" text-anchor="middle" class="sg-lbl" style="fill:#fff">营销域 · 获客</text>
+      <text x="46" y="126" class="sg-lbl-s">· 全渠道广告/活动/活码接入</text>
+      <text x="46" y="148" class="sg-lbl-s">· <tspan font-weight="700">市场活动管理与 ROI 归因</tspan></text>
+      <text x="46" y="170" class="sg-lbl-s">· <tspan font-weight="700">线索池 / 公海 / 评分</tspan></text>
+      <text x="46" y="192" class="sg-lbl-s">· SCRM 私域运营（企微）</text>
+      <text x="46" y="214" class="sg-lbl-s">· CDP 标签画像与培育 SOP</text>
+      <text x="46" y="244" class="sg-sub2">产出物：合格的线索 Lead</text>
+      <rect x="258" y="66" width="212" height="196" rx="12" class="sg-box" style="stroke:var(--navy);stroke-width:1.6"/>
+      <rect x="258" y="66" width="212" height="34" rx="12" class="sg-head-f"/><rect x="258" y="88" width="212" height="12" class="sg-head-f"/>
+      <text x="364" y="89" text-anchor="middle" class="sg-lbl" style="fill:#fff">销售域 · SFA 内核</text>
+      <text x="276" y="126" class="sg-lbl-s">· 客户/联系人/客户树/权力地图</text>
+      <text x="276" y="148" class="sg-lbl-s">· <tspan font-weight="700">商机阶段推进器</tspan>（多套流程）</text>
+      <text x="276" y="170" class="sg-lbl-s">· <tspan font-weight="700">CPQ</tspan>：产品/BOM/价目/报价单</text>
+      <text x="276" y="192" class="sg-lbl-s">· 合同 / 订单（四种成交模式）</text>
+      <text x="276" y="214" class="sg-lbl-s">· 目标 · 漏斗 · 预测 · 赢输分析</text>
+      <text x="276" y="244" class="sg-sub2">产出物：订单与合同</text>
+      <rect x="488" y="66" width="212" height="196" rx="12" class="sg-box"/>
+      <rect x="488" y="66" width="212" height="34" rx="12" class="sg-head-f"/><rect x="488" y="88" width="212" height="12" class="sg-head-f"/>
+      <text x="594" y="89" text-anchor="middle" class="sg-lbl" style="fill:#fff">服务域 · 售后</text>
+      <text x="506" y="126" class="sg-lbl-s">· 全渠道报修接入 + 自助门户</text>
+      <text x="506" y="148" class="sg-lbl-s">· <tspan font-weight="700">工单 + SLA + 智能派单</tspan></text>
+      <text x="506" y="170" class="sg-lbl-s">· 设备档案（IoT）· 备件管理</text>
+      <text x="506" y="192" class="sg-lbl-s">· 服务商协同与结算</text>
+      <text x="506" y="214" class="sg-lbl-s">· 满意度回访 · 维保续约</text>
+      <text x="506" y="244" class="sg-sub2">产出物：满意度与复购商机</text>
+      <rect x="718" y="66" width="214" height="196" rx="12" class="sg-box"/>
+      <rect x="718" y="66" width="214" height="34" rx="12" class="sg-head-f"/><rect x="718" y="88" width="214" height="12" class="sg-head-f"/>
+      <text x="825" y="89" text-anchor="middle" class="sg-lbl" style="fill:#fff">渠道域 · 伙伴</text>
+      <text x="736" y="126" class="sg-lbl-s">· 伙伴准入/授权/赋能培训</text>
+      <text x="736" y="148" class="sg-lbl-s">· <tspan font-weight="700">报备防撞单 · 联合跟进</tspan></text>
+      <text x="736" y="170" class="sg-lbl-s">· <tspan font-weight="700">订货商城</tspan>（预存款/返利/信用）</text>
+      <text x="736" y="192" class="sg-lbl-s">· 对账 · 返利 · 渠道库存上报</text>
+      <text x="736" y="214" class="sg-lbl-s">· 渠道数据与预测</text>
+      <text x="736" y="244" class="sg-sub2">产出物：伙伴侧订单与数据</text>
+      <!-- 域间箭头 -->
+      <line x1="240" y1="164" x2="254" y2="164" class="sg-arr" marker-end="url(#ar1b)"/>
+      <line x1="470" y1="164" x2="484" y2="164" class="sg-arr" marker-end="url(#ar1b)"/>
+      <line x1="700" y1="164" x2="714" y2="164" class="sg-arr" marker-end="url(#ar1b)"/>
+      <!-- 平台底座 -->
+      <rect x="28" y="292" width="904" height="86" rx="12" class="gold-b"/>
+      <text x="52" y="322" class="sg-lbl">平台层（PaaS / aPaaS）—— 四域共用一个底座</text>
+      <text x="52" y="348" class="sg-lbl-s">自定义对象与字段 · 页面布局 · 审批流/业务流/工作流 · 权限（角色/数据/共享）· 自动化规则</text>
+      <text x="52" y="368" class="sg-lbl-s">BI 分析 · 集成与开放 API · 多端（Web/App/企微/钉钉/飞书） · AI 平台（Agent）</text>
+      <line x1="134" y1="262" x2="134" y2="288" class="sg-arr" marker-end="url(#ar1b)"/>
+      <line x1="364" y1="262" x2="364" y2="288" class="sg-arr" marker-end="url(#ar1b)"/>
+      <line x1="594" y1="262" x2="594" y2="288" class="sg-arr" marker-end="url(#ar1b)"/>
+      <line x1="825" y1="262" x2="825" y2="288" class="sg-arr" marker-end="url(#ar1b)"/>
+      <text x="480" y="412" text-anchor="middle" class="sg-sub">通用搭建公式：标准对象 → L2C 流程 → 配置层 → 版本分层 → 行业模板 → 生态扩展（详见第 6 章）</text>
+      <text x="480" y="446" text-anchor="middle" class="sg-sub2">依据：纷享销客产品功能总览 /ap/product-function · 销售易官网产品矩阵 · 两家帮助中心目录</text>
+    </svg>
+    <figcaption><b>图 1-1</b> ｜ CRM 业务全景：四域业务产品跑在同一条客户生命周期主线上，共用一个平台底座</figcaption>
+  </figure>
+
+  <h3 id="c1-pos"><span class="sn">1.2</span>双雄定位：同一客群，两种讲法</h3>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">定位与客群对照</span><span class="duo-q">都打中大 B2B，叙事完全不同</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客</span>
+        <ul>
+          <li>口号：<strong>"连接型 CRM" → 2026 升级 "Agentic CRM（AI 原生）"</strong>，"懂业务、能工作、会进化"<span class="mk ok">✅</span></li>
+          <li>客群：大中型 B2B（制造、快消、医疗、装备等），宣称 7000+ 大中型企业<span class="mk warn">⚠️ 也有页面写 6000+</span></li>
+          <li>行业方案：<strong>14 个行业 + 6 个场景方案</strong>（国产替代 / 企业出海 / Salesforce 迁移 / 大客户 KA / 交付项目管理 / 售后服务），覆盖 54 个细分类目<span class="mk ok">✅</span></li>
+          <li>服务云另按装备细分出行业包：工业机器人、电力设备、医疗设备、IVD、激光装备、储能<span class="mk ok">✅</span></li>
+        </ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易</span>
+        <ul>
+          <li>口号：<strong>"营销服一体化 CRM" → 2026 "AI CRM 2.0 / NeoAgent 2.0"</strong>，从"记录系统"转向"执行系统"<span class="mk ok">✅</span></li>
+          <li>客群：中大型/复杂业务企业，强调"数百家 500 强"（施耐德、海康威视、联想、中外运等案例）<span class="mk ok">✅</span></li>
+          <li>行业方案：约 12 个行业（装备制造、高科技制造、电力设备、软件互联网、生命科学、现代服务、汽车、快消、出海、国产替代等）<span class="mk ok">✅</span></li>
+          <li>背书：Gartner SFA 魔力象限连续入选 + 腾讯控股，主攻"替代国际 CRM"叙事<span class="mk ok">✅</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：行业方案不是 PPT 装饰——它对应产品里的"行业套件 / 行业版产品线"（第 6 章 6.6），是 SaaS 沉淀行业 Know-How 的载体。</div>
+  </div>
+
+  <h3 id="c1-biz"><span class="sn">1.3</span>商业化模式：CRM SaaS 怎么赚钱</h3>
+  <p>两家共同遵守一个商业化公式，但分层策略相反：<strong>软件订阅（人数 × 年）+ 高级版块/应用加购 + 实施服务费单列</strong>。纷享把价格表公开当获客漏斗；销售易把版本分层内化成报价单。</p>
+  <table class="tbl">
+    <tr><th style="width:16%">分层要素</th><th>纷享销客 <span class="tag-fx">FX</span></th><th>销售易 <span class="tag-neo">Neo</span></th></tr>
+    <tr><td><b>版本分层</b></td><td>小微免费（1-15 人）→ 企业版 ¥200 / 营销版 ¥800 每人每年；另有专业版 ¥119 / 旗舰版 ¥220 每人每月<span class="mk warn">⚠️ 两页口径并存，12 个月起购</span></td>
+        <td>官网不公开报价；第三方口径专业 90 / 企业 180 / 旗舰 360 / 无限 600 元每人每月<span class="mk third">❓</span>；2025-2026 以「易启」（WorkBuddy/飞书版）下沉小微<span class="mk ok">✅</span></td></tr>
+    <tr><td><b>付费加购</b></td><td>版块化付费应用：订货通、营销通、服务通、PRM、库存管理、高级外勤、行业套件等<span class="mk warn">⚠️ 完整清单待核实</span></td>
+        <td>按云组合报价（营销/销售/伙伴/服务/BI/Data Cloud），官方手册证实"旗舰版"是功能最全公有云版本<span class="mk ok">✅</span></td></tr>
+    <tr><td><b>实施服务</b></td><td>公开实施费：基础流程 3000 元 / 业务流程 6000 元，深度定制另议<span class="mk warn">⚠️ 页面截断</span></td>
+        <td>实施费随询价方案；依赖直销 + 行业化交付<span class="mk third">❓</span></td></tr>
+    <tr><td><b>部署形态</b></td><td>公有云 SaaS；信创全栈适配；全球数据中心<span class="mk ok">✅</span></td>
+        <td>公有云（腾讯云）+ 私有化 + 海外数据中心（新加坡/印尼/法兰克福）<span class="mk ok">✅</span></td></tr>
+  </table>
+  <figure class="fig">
+    <svg viewBox="0 0 960 430" role="img" aria-label="商业化结构对比">
+      <defs><marker id="ar1c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m1c"/></marker></defs>
+      <style>.m1c{fill:var(--muted)}</style>
+      <text x="240" y="30" text-anchor="middle" class="sg-h1" style="fill:var(--fx)">纷享销客：透明价目漏斗</text>
+      <text x="720" y="30" text-anchor="middle" class="sg-h1" style="fill:var(--neo)">销售易：询价制 + 一体化菜单</text>
+      <rect x="60" y="46" width="360" height="40" rx="8" class="fx-b"/><text x="240" y="71" text-anchor="middle" class="sg-lbl-s">小微免费版（1-15 人）—— 获客漏斗入口</text>
+      <rect x="90" y="96" width="300" height="38" rx="8" class="fx-b"/><text x="240" y="120" text-anchor="middle" class="sg-lbl-s">企业版 ¥200 / 营销版 ¥800 每人每年</text>
+      <rect x="120" y="144" width="240" height="38" rx="8" class="fx-b"/><text x="240" y="168" text-anchor="middle" class="sg-lbl-s">专业版 ¥119 / 旗舰版 ¥220 每人每月 ⚠️</text>
+      <rect x="150" y="192" width="180" height="38" rx="8" class="fx-b"/><text x="240" y="216" text-anchor="middle" class="sg-lbl-s">付费版块加购（订货通…）</text>
+      <rect x="180" y="240" width="120" height="38" rx="8" class="fx-b"/><text x="240" y="264" text-anchor="middle" class="sg-lbl-s">定制化报价</text>
+      <line x1="240" y1="86" x2="240" y2="92" class="sg-arr" marker-end="url(#ar1c)"/><line x1="240" y1="134" x2="240" y2="140" class="sg-arr" marker-end="url(#ar1c)"/>
+      <line x1="240" y1="182" x2="240" y2="188" class="sg-arr" marker-end="url(#ar1c)"/><line x1="240" y1="230" x2="240" y2="236" class="sg-arr" marker-end="url(#ar1c)"/>
+      <rect x="540" y="46" width="360" height="40" rx="8" class="neo-b"/><text x="720" y="71" text-anchor="middle" class="sg-lbl-s">易启（小微 AI 产品，注册即用）</text>
+      <rect x="556" y="96" width="328" height="86" rx="8" class="neo-b"/>
+      <text x="720" y="122" text-anchor="middle" class="sg-lbl-s">专业版 → 企业版 → 旗舰版 → 无限版</text>
+      <text x="720" y="144" text-anchor="middle" class="sg-sub">官方不公示价格，表单询价</text>
+      <text x="720" y="164" text-anchor="middle" class="sg-sub2">❓ 第三方价：90/180/360/600 元每人每月</text>
+      <rect x="572" y="192" width="296" height="38" rx="8" class="neo-b"/><text x="720" y="216" text-anchor="middle" class="sg-lbl-s">一体化云菜单组合报价（营销/销售/服务/BI）</text>
+      <rect x="588" y="240" width="264" height="38" rx="8" class="neo-b"/><text x="720" y="264" text-anchor="middle" class="sg-lbl-s">私有化部署 / 行业项目制</text>
+      <line x1="720" y1="86" x2="720" y2="92" class="sg-arr" marker-end="url(#ar1c)"/><line x1="720" y1="182" x2="720" y2="188" class="sg-arr" marker-end="url(#ar1c)"/>
+      <line x1="720" y1="230" x2="720" y2="236" class="sg-arr" marker-end="url(#ar1c)"/>
+      <rect x="60" y="306" width="840" height="72" rx="10" class="gold-b"/>
+      <text x="480" y="334" text-anchor="middle" class="sg-lbl">共同商业化公式（中国 CRM SaaS 与 Salesforce 纯订阅的显著差异）</text>
+      <text x="480" y="360" text-anchor="middle" class="sg-lbl-s">软件订阅（人数 × 年，12 个月起购） ＋ 版块/应用按需加购 ＋ 实施服务费单列 ＋ 大客户项目制</text>
+      <text x="480" y="400" text-anchor="middle" class="sg-sub2">依据：fxiaoke.com/ap/product-price、/price · xiaoshouyi.com（无公开价目页）· 华为云市场旗舰版手册</text>
+    </svg>
+    <figcaption><b>图 1-2</b> ｜ 两种定价策略殊途同归：用分层把定制需求尽量收敛进标准配置</figcaption>
+  </figure>
+  <div class="callout gold"><b class="t">为什么实施费单列很重要</b>：它承认了一个事实——再标准的 SaaS，进中大型企业都需要"配置 + 数据初始化 + 流程对齐"的交付工作。标准化不是消灭实施，而是把实施从"写代码"降级为"做配置"（第 6 章展开）。</div>
+  <div class="recap"><h4>本章要点</h4><ul>
+    <li>CRM 经营三件事：客户资产、销售过程、回款兑现；营销/服务/渠道是把主链路两端与外部伙伴连起来的外延域。</li>
+    <li>两家同为中大 B2B 客群：纷享讲"连接"，销售易讲"一体化 + 数据/AI"；行业方案都是产品化的 Know-How 载体。</li>
+    <li>商业化 = 订阅（人/年）+ 版块加购 + 实施费；纷享公开价目做漏斗，销售易询价制保溢价。</li>
+  </ul></div>
+  <details class="src"><summary>本节来源</summary><ul>
+    <li>纷享价格页：https://www.fxiaoke.com/ap/product-price/ 、https://www.fxiaoke.com/price/</li>
+    <li>纷享解决方案总览：https://www.fxiaoke.com/ap/solutions · 服务云行业包：https://servicecloud.fxiaoke.com/</li>
+    <li>纷享实施服务：https://www.fxiaoke.com/ap/implement</li>
+    <li>销售易产品矩阵与行业：https://www.xiaoshouyi.com/ 、/sfa 、/100949-2（易启）</li>
+    <li>销售易价格（第三方）：知乎/cnblogs 2021-2025 口径 ❓；华为云市场旗舰版手册（2023）✅</li>
+  </ul></details>
+</section>
+
+<!-- ================= 第2章 系统架构 ================= -->
+<section class="chapter reveal" id="c2">
+  <header class="ch-head">
+    <div class="kicker">Part 2 · 系统架构</div>
+    <h2>第 2 章 · 系统的架构</h2>
+    <div class="ch-no">02</div>
+    <p class="lede">剥开业务功能看骨架：两家产品在架构上高度同构——多租户 SaaS 基座 + 元数据驱动 PaaS + 按云组合的业务应用 + 多端 + 开放生态，差异只在个别层的取舍。</p>
+  </header>
+  <div class="goals"><b>学习目标</b><ul>
+    <li>能画出 CRM SaaS 的六层架构，并说出每层职责；</li>
+    <li>理解"元数据驱动"为什么是 SaaS 可配置性的根基；</li>
+    <li>掌握四类权限设计，以及 AI 原生时代架构新增的语义层。</li>
+  </ul></div>
+
+  <h3 id="c2-six"><span class="sn">2.1</span>六层总体架构</h3>
+  <figure class="fig">
+    <svg viewBox="0 0 960 560" role="img" aria-label="CRM SaaS 六层架构">
+      <defs><marker id="ar2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m2a"/></marker></defs>
+      <style>.m2a{fill:var(--muted)}</style>
+      <rect x="24" y="18" width="830" height="56" rx="10" class="sg-box"/>
+      <text x="44" y="42" class="sg-lbl">⑥ 生态连接层</text>
+      <text x="44" y="62" class="sg-lbl-s">OpenAPI（对象级标准动作） · iPaaS 连接器（ERP/财务/OA） · Webhook 事件 · OAuth 单点登录 · MCP/CLI</text>
+      <rect x="866" y="24" width="70" height="44" rx="6" class="fx-b"/><text x="901" y="43" text-anchor="middle" class="sg-sub2" style="fill:var(--fx-deep)">纷享</text><text x="901" y="58" text-anchor="middle" class="sg-sub2">iPaaS独立</text>
+      <rect x="24" y="86" width="830" height="56" rx="10" class="sg-box"/>
+      <text x="44" y="110" class="sg-lbl">⑤ 多端层</text>
+      <text x="44" y="130" class="sg-lbl-s">Web 管理端/业务端 · iOS/Android/PC 客户端 · 企业微信版 · 钉钉版 · 飞书版 · 小程序/H5 · 大屏驾驶舱</text>
+      <rect x="866" y="92" width="70" height="44" rx="6" class="neo-b"/><text x="901" y="111" text-anchor="middle" class="sg-sub2" style="fill:var(--neo-deep)">销售易</text><text x="901" y="126" text-anchor="middle" class="sg-sub2">腾讯会议</text>
+      <rect x="24" y="154" width="830" height="92" rx="10" class="sg-box" style="stroke:var(--navy);stroke-width:1.5"/>
+      <text x="44" y="178" class="sg-lbl">④ 业务应用层（按"云"组合销售）</text>
+      <g class="sg-lbl-s" text-anchor="middle">
+        <rect x="44" y="192" width="188" height="38" rx="8" class="sg-box2"/><text x="138" y="216">营销云（SCRM/CDP）</text>
+        <rect x="246" y="192" width="188" height="38" rx="8" class="sg-box2" style="stroke:var(--navy)"/><text x="340" y="216">销售云 SFA（内核）</text>
+        <rect x="448" y="192" width="188" height="38" rx="8" class="sg-box2"/><text x="542" y="216">服务云（工单/现场）</text>
+        <rect x="650" y="192" width="184" height="38" rx="8" class="sg-box2"/><text x="742" y="216">渠道域（互联/伙伴云）</text>
+      </g>
+      <text x="44" y="244" class="sg-sub2">上层的"云"是可插拔的打包单位：客户按需购买，但都长在同一套对象与权限体系上</text>
+      <rect x="24" y="258" width="830" height="104" rx="10" class="gold-b"/>
+      <text x="44" y="284" class="sg-lbl">③ 平台层 PaaS / aPaaS（可配置性的来源）</text>
+      <g class="sg-lbl-s" text-anchor="middle">
+        <rect x="44" y="298" width="152" height="44" rx="8" class="sg-box2"/><text x="120" y="316">对象/字段/布局</text><text x="120" y="333" class="sg-sub2">可视化设计器</text>
+        <rect x="210" y="298" width="152" height="44" rx="8" class="sg-box2"/><text x="286" y="316">流程引擎</text><text x="286" y="333" class="sg-sub2">审批/业务/工作流</text>
+        <rect x="376" y="298" width="152" height="44" rx="8" class="sg-box2"/><text x="452" y="316">权限体系</text><text x="452" y="333" class="sg-sub2">功能/数据/共享</text>
+        <rect x="542" y="298" width="152" height="44" rx="8" class="sg-box2"/><text x="618" y="316">自动化</text><text x="618" y="333" class="sg-sub2">规则/函数/触发器</text>
+        <rect x="708" y="298" width="126" height="44" rx="8" class="sg-box2"/><text x="771" y="316">低/高代码</text><text x="771" y="333" class="sg-sub2">沙盒·组件·函数</text>
+      </g>
+      <rect x="24" y="374" width="830" height="72" rx="10" class="sg-box"/>
+      <text x="44" y="398" class="sg-lbl">② 数据层</text>
+      <text x="44" y="420" class="sg-lbl-s">业务库（多租户） · 统一元数据（Meta API） · BI 分析引擎 · <tspan font-weight="700" style="fill:var(--fx-deep)">纷享：BI平台</tspan> / <tspan font-weight="700" style="fill:var(--neo-deep)">销售易：独立 CDP（Data Cloud）+ 指标平台</tspan></text>
+      <text x="44" y="438" class="sg-sub2">销售易把客户数据平台抬升为独立层（多源接入/标签画像/AI-Ready），是两家最大的数据架构差异</text>
+      <rect x="24" y="458" width="830" height="56" rx="10" class="sg-box" style="stroke:var(--ink-strong);stroke-width:1.5"/>
+      <text x="44" y="482" class="sg-lbl">① 多租户 SaaS 基座</text>
+      <text x="44" y="502" class="sg-lbl-s">弹性伸缩 · 双活/容灾备份 · 租户隔离（纷享：单租户独立 PostgreSQL 库） · 安全合规 · 全球数据中心</text>
+      <text x="480" y="544" text-anchor="middle" class="sg-sub2">依据：fxiaoke.com/ap/plat-Paas、/ap/open-api · xiaoshouyi.com/paas、/cdp · 两家帮助中心 PaaS 频道</text>
+    </svg>
+    <figcaption><b>图 2-1</b> ｜ 六层架构：业务应用层像"可插拔的云"，一切可配置性来自第③层，一切规模化能力来自第①层</figcaption>
+  </figure>
+  <div class="callout"><b class="t">读架构的方法</b>：判断一个 CRM SaaS 的成熟度，先看三层——<strong>基座</strong>（是否真多租户、容灾合规）、<strong>平台层</strong>（配置颗粒度：能否自定义对象/流程/权限）、<strong>连接层</strong>（API 是否对象级标准动作、有没有 iPaaS）。业务功能反而最容易模仿。</div>
+
+  <h3 id="c2-meta"><span class="sn">2.2</span>元数据驱动：SaaS 可配置性的根基</h3>
+  <p>为什么一个 SaaS 产品能同时服务几千家有不同流程的企业？答案是<strong>元数据驱动架构</strong>：客户的"自定义"不是改代码，而是往元数据里写配置——对象、字段、布局、流程、规则都以元数据形式存储，运行时统一解释执行。</p>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">元数据与开发范式</span><span class="duo-q">两家都在对标 Salesforce 的开发体系</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客</span>
+        <ul>
+          <li>可视化对象设计器：无代码创建业务对象、扩展字段、配置界面<span class="mk ok">✅</span></li>
+          <li><strong>沙盒（镜像环境）+ 更改集 + 软件包</strong>：一键部署到正式企业；软件包可<strong>跨租户复制</strong>，沉淀行业/ISV 方案<span class="mk ok">✅</span>——直接对标 Salesforce 的 Sandbox + Change Set</li>
+          <li>高代码：APL（Java/Groovy 服务端）+ PWC（前端组件/插件），WebIDE / VSCode 工具链<span class="mk ok">✅</span></li>
+        </ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易</span>
+        <ul>
+          <li>可视化业务建模：拖拽完成对象/字段/关系建模，"数据模型自管理"<span class="mk ok">✅</span></li>
+          <li><strong>四类 API</strong>：Open API / Bulk API / <button class="term" data-term="xoql">XOQL</button>（自研查询语言）/ Meta API（直接暴露元数据）<span class="mk ok">✅</span></li>
+          <li>高代码：触发器 Trigger + Java/H5 全代码套件 + SDK；沙盒环境 + 制品跨环境迁移<span class="mk ok">✅</span></li>
+          <li>前端组件级开放：官方 neo-cmp-cli 支持 React/Vue 自定义组件发布上平台<span class="mk ok">✅</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：判断一个平台是否"真 PaaS"，看三个证据——①能否自定义对象（而不只是自定义字段）；②开发有没有沙盒与制品迁移；③元数据本身有没有 API（销售易的 Meta API、纷享的软件包机制）。营销话术会混淆"低代码表单"与"元数据平台"，用这三条去验证。</div>
+  </div>
+
+  <h3 id="c2-acl"><span class="sn">2.3</span>组织与权限架构：RBAC + ABAC</h3>
+  <p>CRM 权限设计要同时回答"谁能用什么功能"和"谁能看哪些数据"。<button class="term" data-term="rbac">RBAC</button> 管角色授权，<button class="term" data-term="abac">ABAC</button> 管按属性动态过滤数据——销售易官方明示双模型并用；纷享以"多维多级权限"表述并额外设计了<strong>外部权限体系</strong>支撑跨企业场景。</p>
+  <figure class="fig">
+    <svg viewBox="0 0 960 430" role="img" aria-label="权限模型四象限">
+      <rect x="480" y="18" width="456" height="190" rx="12" class="sg-box"/>
+      <text x="502" y="46" class="sg-lbl">① 功能权限（RBAC）</text>
+      <text x="502" y="70" class="sg-lbl-s">角色 × 菜单/按钮/字段级：可见、可编辑、可导出</text>
+      <text x="502" y="94" class="sg-lbl-s">纷享：精细到字段级、界面级；"千企千面"按角色出布局</text>
+      <text x="502" y="118" class="sg-lbl-s">销售易：用户-角色-职能-数据维度分层（Admin-01~04）</text>
+      <text x="502" y="146" class="sg-sub2">设计要点：权限不是开关列表，而是"角色 × 资源 × 动作"</text>
+      <text x="502" y="164" class="sg-sub2">矩阵，再叠加字段级脱敏</text>
+      <rect x="24" y="18" width="440" height="190" rx="12" class="sg-box"/>
+      <text x="46" y="46" class="sg-lbl">② 数据权限（ABAC）</text>
+      <text x="46" y="70" class="sg-lbl-s">按组织/区域/业务线/产品线动态圈定数据范围</text>
+      <text x="46" y="94" class="sg-lbl-s">个人级 / 部门级 / 组织级；只读 / 读写 / 隐藏</text>
+      <text x="46" y="118" class="sg-lbl-s">销售易：多维度数据权限；纷享：多区域、多产品线管控</text>
+      <text x="46" y="146" class="sg-sub2">设计要点：销售组织天然是矩阵（大区×产品线×团队），</text>
+      <text x="46" y="164" class="sg-sub2">数据权限必须支持多维交叉，不能只有一棵部门树</text>
+      <rect x="24" y="224" width="440" height="182" rx="12" class="sg-box"/>
+      <text x="46" y="252" class="sg-lbl">③ 共享与协作</text>
+      <text x="46" y="276" class="sg-lbl-s">共享规则：把记录共享给相关部门协作</text>
+      <text x="46" y="300" class="sg-lbl-s">团队成员继承：转交/公海回收时协作成员权限怎么办</text>
+      <text x="46" y="324" class="sg-lbl-s">（销售易 Admin-07；对标 Salesforce Account Team）</text>
+      <text x="46" y="352" class="sg-sub2">设计要点：CRM 是团队运动，只有"归属人"模型撑不起</text>
+      <text x="46" y="370" class="sg-sub2">售前售后多人协作，必须有共享与继承规则</text>
+      <rect x="480" y="224" width="456" height="182" rx="12" class="fx-b"/>
+      <text x="502" y="252" class="sg-lbl">④ 外部 / 跨企业权限 <tspan class="sg-sub">（中国 CRM 特色）</tspan></text>
+      <text x="502" y="276" class="sg-lbl-s">上下游伙伴各自是独立租户/组织，要能跨企业协作</text>
+      <text x="502" y="300" class="sg-lbl-s">纷享：外部权限体系 + 互联角色/互联部门（CPaaS）</text>
+      <text x="502" y="324" class="sg-lbl-s">销售易：伙伴云门户 + 企微上下游身份</text>
+      <text x="502" y="352" class="sg-sub2">设计要点：内部权限模型推到企业边界之外，</text>
+      <text x="502" y="370" class="sg-sub2">是"连接型 CRM"的架构前提（第 5 章展开）</text>
+      <circle cx="480" cy="215" r="54" style="fill:var(--navy)"/>
+      <text x="480" y="208" text-anchor="middle" class="sg-lbl" style="fill:#fff">RBAC</text>
+      <text x="480" y="228" text-anchor="middle" class="sg-lbl" style="fill:#fff">＋ ABAC</text>
+      <text x="480" y="424" text-anchor="middle" class="sg-sub2">依据：xiaoshouyi.com/paas（RBAC+ABAC 双模型）· help.fxiaoke.com PaaS「组织与权限」· 销售易 Admin 系列目录</text>
+    </svg>
+    <figcaption><b>图 2-2</b> ｜ CRM 权限四象限：功能权限、数据权限、共享协作、跨企业外部权限</figcaption>
+  </figure>
+
+  <h3 id="c2-ai"><span class="sn">2.4</span>AI 原生架构：2025-2026 的新平台层</h3>
+  <p>两家在 2025 年同步发布 Agent 版产品、2026 年同步升级"AI 原生"，而且都把 AI 做成<strong>平台层</strong>而非插件——但技术路线不同：</p>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">AI 平台路线</span><span class="duo-q">自研 AgentOS 多模型开放 vs 业务语义层绑定混元</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享 · ShareHive 蜂巢 AgentOS</span>
+        <ul>
+          <li>三层结构：<strong>五层语义建模 + 三层 Know-How 系统 + Agent 应用市场</strong>，统一数据底座<span class="mk ok">✅</span></li>
+          <li>组件：Agent Studio（构建器）、ShareAgent、提示词模板、语义检索索引、对象 AI 组件、计费与用量管理<span class="mk ok">✅</span></li>
+          <li>Agent 按业务域开箱分发：营销 / 销售（线索、客户、商机、报价订单、销售行为五组）/ 服务 / 分析 / 知识库<span class="mk ok">✅</span></li>
+          <li>多模型开放接入（千问、豆包等办公连接器）<span class="mk ok">✅</span></li>
+        </ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易 · 业务语义层 + NeoAgent 2.0</span>
+        <ul>
+          <li>底座：<strong>业务语义层</strong>（AI 理解业务语义后自主推理决策）+ <strong>可信数据层</strong>（Data Cloud 支撑推理负载）<span class="mk ok">✅</span></li>
+          <li>五类角色 Agent：营销 / 销售 / 服务客服 / 渠道经理 / 分析师；销售 Agent 可解释商机健康度评分、行动建议一键转任务<span class="mk ok">✅</span></li>
+          <li>Agent 开发平台：Prompt Builder / Agent Builder / Agentic RAG / 可视化调试<span class="mk warn">⚠️ 详情官网未展开</span></li>
+          <li>模型绑定腾讯混元 + DeepSeek<span class="mk ok">✅</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：AI 进 CRM 后，配置对象从 CRUD 扩展到 <em>Prompt / Agent / RAG / 用量计费</em>。两家共同做法值得记住：<strong>预置角色化 Agent（开箱）+ Agent 开发平台（自建）</strong>两层，和"标准功能 + PaaS 定制"是同一个设计模式在 AI 时代的重演。</div>
+  </div>
+
+  <h3><span class="sn">2.5</span>安全合规与部署：面向国央企与出海的硬指标</h3>
+  <table class="tbl">
+    <tr><th style="width:18%">维度</th><th>纷享销客 <span class="tag-fx">FX</span></th><th>销售易 <span class="tag-neo">Neo</span></th></tr>
+    <tr><td><b>认证</b></td><td>等保三级、ISO 27001/9001/20000/27701/<strong>42001（AI 管理体系）</strong>、SOC 1 & SOC 2 Type II（安永审计）<span class="mk ok">✅</span></td>
+        <td>等保三级、ISO 27001/20000/9001/27701/22301（业务连续性）、CCRC App 安全认证<span class="mk warn">⚠️ 部分来自媒体交叉</span></td></tr>
+    <tr><td><b>信创</b></td><td>全栈适配：麒麟（OS）+ 飞腾（芯片）+ 金仓（数据库）+ 东方通（中间件）<span class="mk ok">✅</span></td>
+        <td>依托腾讯云基础设施；信创细节未公开<span class="mk third">❓</span></td></tr>
+    <tr><td><b>全球部署</b></td><td>全球数据中心，香港/美国分公司，GDPR 支撑能力<span class="mk ok">✅</span></td>
+        <td>新加坡、印尼、法兰克福数据中心 + 东南亚总部，主打中国企业出海<span class="mk ok">✅</span></td></tr>
+    <tr><td><b>高可用</b></td><td>数据分流框架、平行扩容、同步日志与快照恢复<span class="mk ok">✅</span></td>
+        <td>全链路多活、跨双活主备集群 + 跨区域备份容灾、容器化弹性伸缩<span class="mk ok">✅</span></td></tr>
+  </table>
+  <div class="callout"><b class="t">观察</b>：安全叙事也在"对位竞争"——纷享强调独立第三方审计 + 信创全栈（攻国央企），销售易强调腾讯云背书 + Gartner 认证（攻外企替换与全球化客户）。卖给谁，决定了把哪张证书印在官网首页。</div>
+  <div class="recap"><h4>本章要点</h4><ul>
+    <li>六层架构：多租户基座 → 数据层 → PaaS 平台层 → 业务应用层（按云组合）→ 多端 → 生态连接层；两家的差异集中在数据层（独立 CDP）与连接层（iPaaS/跨租户互联）。</li>
+    <li>元数据驱动是可配置性的根基：自定义对象、沙盒 + 制品迁移、Meta API 是"真 PaaS"的三个判据。</li>
+    <li>权限 = RBAC（功能）+ ABAC（数据）+ 共享继承 + 外部跨企业权限。</li>
+    <li>AI 原生 = 语义层/Know-How + 预置角色 Agent + Agent 开发平台，是配置模式在 AI 时代的重演。</li>
+  </ul></div>
+  <details class="src"><summary>本节来源</summary><ul>
+    <li>纷享 PaaS 产品页：https://www.fxiaoke.com/ap/plat-Paas/ · 开发者站：https://developer.fxiaoke.com/home/</li>
+    <li>纷享信任中心：https://www.fxiaoke.com/crm/securecenter · 帮助中心 PaaS 频道：https://help.fxiaoke.com/c449</li>
+    <li>销售易 aPaaS：https://www.xiaoshouyi.com/paas · Data Cloud：/cdp · NeoAgent：/neoai</li>
+    <li>销售易 Admin-01~12 / PaaS-01~09 文档目录：https://service.xiaoshouyi.com/ · 官方 CLI：https://github.com/xsy-neoui/neo-cmp-cli</li>
+  </ul></details>
+</section>
+
+<!-- ================= 第3章 核心业务流程 ================= -->
+<section class="chapter reveal" id="c3">
+  <header class="ch-head">
+    <div class="kicker">Part 3 · 核心业务流程</div>
+    <h2>第 3 章 · 核心业务流程</h2>
+    <div class="ch-no">03</div>
+    <p class="lede">功能清单是静态的，流程才是活的。本章以纷享帮助中心官方《LTO 业务流程总览》为骨架，看一条线索如何一路变成回款，以及售后与渠道两条支线闭环。</p>
+  </header>
+  <div class="goals"><b>学习目标</b><ul>
+    <li>能画出 L2C 六阶段泳道图，说出每个阶段的对象、角色与关键规则；</li>
+    <li>理解"订单后延伸"（应收/回款）为什么是中国 CRM 的标配；</li>
+    <li>掌握服务工单闭环与渠道"报备-订货-返利"闭环的支撑功能。</li>
+  </ul></div>
+
+  <h3 id="c3-l2c"><span class="sn">3.1</span>L2C 主流程：从线索到订单的六个阶段</h3>
+  <p>纷享官方称其为 <button class="term" data-term="lto">LTO</button>（Lead to Order，销售线索到销售订单的端到端流程），共六个阶段；销售易的 L2C（Lead to Cash）把回款也纳入主流程。两个名字，同一条链。</p>
+  <figure class="fig">
+    <svg viewBox="0 0 960 620" role="img" aria-label="L2C 泳道图">
+      <defs><marker id="ar3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m3a"/></marker>
+      <marker id="ar3b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m3b"/></marker></defs>
+      <style>.m3a{fill:var(--fx)}.m3b{fill:var(--muted)}</style>
+      <!-- 阶段表头 -->
+      <g text-anchor="middle">
+        <rect x="124" y="16" width="136" height="42" rx="8" class="fx-b"/><text x="192" y="34" class="sg-lbl-s">① 市场获客</text><text x="192" y="50" class="sg-sub2">活动 · 广告 · 内容</text>
+        <rect x="263" y="16" width="136" height="42" rx="8" class="fx-b"/><text x="331" y="34" class="sg-lbl-s">② 线索接入分配</text><text x="331" y="50" class="sg-sub2">查重 · 评分 · 线索池</text>
+        <rect x="402" y="16" width="136" height="42" rx="8" class="fx-b"/><text x="470" y="34" class="sg-lbl-s">③ 客户与联系人</text><text x="470" y="50" class="sg-sub2">建档 · 公海流转</text>
+        <rect x="541" y="16" width="136" height="42" rx="8" class="fx-b"/><text x="609" y="34" class="sg-lbl-s">④ 商机推进</text><text x="609" y="50" class="sg-sub2">阶段 · 决策链 · 输赢单</text>
+        <rect x="680" y="16" width="136" height="42" rx="8" class="fx-b"/><text x="748" y="34" class="sg-lbl-s">⑤ CPQ 报价</text><text x="748" y="50" class="sg-sub2">产品 · 价目 · 折扣</text>
+        <rect x="819" y="16" width="120" height="42" rx="8" class="fx-b"/><text x="879" y="34" class="sg-lbl-s">⑥ 确认交易</text><text x="879" y="50" class="sg-sub2">合同 · 订单</text>
+      </g>
+      <!-- 泳道 -->
+      <g>
+        <rect x="24" y="70" width="916" height="88" class="sg-band" rx="8"/><text x="40" y="108" class="sg-lbl-s" font-weight="700">市场</text><text x="40" y="126" class="sg-sub2">Marketing</text>
+        <rect x="24" y="162" width="916" height="88" class="sg-band" rx="8"/><text x="40" y="200" class="sg-lbl-s" font-weight="700">销售</text><text x="40" y="218" class="sg-sub2">Sales</text>
+        <rect x="24" y="254" width="916" height="88" class="sg-band" rx="8"/><text x="40" y="292" class="sg-lbl-s" font-weight="700">商务</text><text x="40" y="310" class="sg-sub2">Admin</text>
+        <rect x="24" y="346" width="916" height="88" class="sg-band" rx="8"/><text x="40" y="384" class="sg-lbl-s" font-weight="700">财务</text><text x="40" y="402" class="sg-sub2">Finance</text>
+        <rect x="24" y="438" width="916" height="72" class="sg-band" rx="8"/><text x="40" y="468" class="sg-lbl-s" font-weight="700">交付/仓储</text><text x="40" y="486" class="sg-sub2">Delivery</text>
+      </g>
+      <g stroke="var(--line2)" stroke-dasharray="4 5"><line x1="261" y1="66" x2="261" y2="512"/><line x1="400" y1="66" x2="400" y2="512"/><line x1="539" y1="66" x2="539" y2="512"/><line x1="678" y1="66" x2="678" y2="512"/><line x1="817" y1="66" x2="817" y2="512"/></g>
+      <!-- 市场泳道 -->
+      <rect x="132" y="82" width="120" height="42" rx="7" class="fx-b"/><text x="192" y="100" text-anchor="middle" class="sg-sub">市场活动/广告/活码</text><text x="192" y="115" text-anchor="middle" class="sg-sub2">记录来源 · 活动成员</text>
+      <rect x="271" y="82" width="120" height="42" rx="7" class="fx-b"/><text x="331" y="100" text-anchor="middle" class="sg-sub">线索池 · 评分 · 查重</text><text x="331" y="115" text-anchor="middle" class="sg-sub2">行为积分 · 标讯通</text>
+      <rect x="549" y="82" width="120" height="42" rx="7" class="sg-box2" stroke-dasharray="4 3"/><text x="609" y="100" text-anchor="middle" class="sg-sub">ROI 归因分析</text><text x="609" y="115" text-anchor="middle" class="sg-sub2">反哺投放决策</text>
+      <line x1="252" y1="103" x2="267" y2="103" class="sg-arr" marker-end="url(#ar3b)"/>
+      <line x1="391" y1="103" x2="545" y2="103" class="sg-arrd" marker-end="url(#ar3b)"/>
+      <!-- 销售泳道 -->
+      <rect x="271" y="174" width="120" height="42" rx="7" class="fx-b"/><text x="331" y="192" text-anchor="middle" class="sg-sub">领取 / 分配 / 跟进</text><text x="331" y="207" text-anchor="middle" class="sg-sub2">状态机 · 回收规则</text>
+      <rect x="410" y="174" width="120" height="42" rx="7" class="fx-b"/><text x="470" y="192" text-anchor="middle" class="sg-sub">建档 · 权力地图</text><text x="470" y="207" text-anchor="middle" class="sg-sub2">先查重 · 客户树</text>
+      <rect x="549" y="174" width="120" height="42" rx="7" class="fx-b" style="stroke-width:2"/><text x="609" y="192" text-anchor="middle" class="sg-sub" font-weight="700">商机阶段推进</text><text x="609" y="207" text-anchor="middle" class="sg-sub2">决策链 · 健康度</text>
+      <rect x="688" y="174" width="120" height="42" rx="7" class="fx-b"/><text x="748" y="192" text-anchor="middle" class="sg-sub">报价单</text><text x="748" y="207" text-anchor="middle" class="sg-sub2">选配 · 核价</text>
+      <rect x="827" y="174" width="106" height="42" rx="7" class="fx-b" style="stroke-width:2"/><text x="880" y="192" text-anchor="middle" class="sg-sub" font-weight="700">订单 / 合同</text><text x="880" y="207" text-anchor="middle" class="sg-sub2">四种成交模式</text>
+      <line x1="391" y1="195" x2="406" y2="195" class="sg-arr" marker-end="url(#ar3b)"/>
+      <line x1="530" y1="195" x2="545" y2="195" class="sg-arr" marker-end="url(#ar3b)"/>
+      <line x1="669" y1="195" x2="684" y2="195" class="sg-arr" marker-end="url(#ar3b)"/>
+      <line x1="808" y1="195" x2="823" y2="195" class="sg-arr" marker-end="url(#ar3b)"/>
+      <path d="M331,128 L331,170" class="sg-arr fx-st" marker-end="url(#ar3a)"/>
+      <!-- 商务泳道 -->
+      <rect x="688" y="266" width="120" height="42" rx="7" class="sg-box2"/><text x="748" y="284" text-anchor="middle" class="sg-sub">产品 · BOM · 价目表</text><text x="748" y="299" text-anchor="middle" class="sg-sub2">价格政策 · 可售范围</text>
+      <rect x="827" y="266" width="106" height="42" rx="7" class="sg-box2"/><text x="880" y="284" text-anchor="middle" class="sg-sub">合同审批 / 变更</text><text x="880" y="299" text-anchor="middle" class="sg-sub2">进度 · 续签</text>
+      <line x1="748" y1="216" x2="748" y2="262" class="sg-arrd" marker-end="url(#ar3b)"/>
+      <line x1="808" y1="287" x2="823" y2="287" class="sg-arrd" marker-end="url(#ar3b)"/>
+      <!-- 财务泳道 -->
+      <rect x="549" y="358" width="120" height="42" rx="7" class="sg-box2"/><text x="609" y="376" text-anchor="middle" class="sg-sub">折扣审批</text><text x="609" y="391" text-anchor="middle" class="sg-sub2">特价申请</text>
+      <rect x="827" y="358" width="106" height="42" rx="7" class="sg-box2"/><text x="880" y="376" text-anchor="middle" class="sg-sub">信用 · 回款计划</text><text x="880" y="391" text-anchor="middle" class="sg-sub2">预警跟踪</text>
+      <line x1="609" y1="216" x2="609" y2="354" class="sg-arrd" marker-end="url(#ar3b)"/>
+      <line x1="880" y1="216" x2="880" y2="354" class="sg-arr fx-st" marker-end="url(#ar3a)"/>
+      <!-- 交付泳道 -->
+      <rect x="827" y="450" width="106" height="42" rx="7" class="sg-box2"/><text x="880" y="468" text-anchor="middle" class="sg-sub">库存 · 发货</text><text x="880" y="483" text-anchor="middle" class="sg-sub2">或项目化交付</text>
+      <line x1="880" y1="400" x2="880" y2="446" class="sg-arrd" marker-end="url(#ar3b)"/>
+      <!-- 订单后延伸 -->
+      <rect x="24" y="524" width="916" height="76" rx="10" class="navy-b"/>
+      <text x="44" y="548" class="sg-lbl">订单后延伸 · 中国 CRM 标配</text>
+      <g text-anchor="middle" class="sg-lbl-s">
+        <rect x="290" y="534" width="140" height="30" rx="7" class="sg-box2"/><text x="360" y="553">库存 / 发货</text>
+        <rect x="452" y="534" width="150" height="30" rx="7" class="sg-box2"/><text x="527" y="553">三类立应收 ▸</text>
+        <rect x="624" y="534" width="130" height="30" rx="7" class="sg-box2"/><text x="689" y="553">回款核销</text>
+        <rect x="776" y="534" width="140" height="30" rx="7" class="sg-box2"/><text x="846" y="553">开票 / 收入确认</text>
+      </g>
+      <line x1="430" y1="549" x2="448" y2="549" class="sg-arr" marker-end="url(#ar3b)"/><line x1="602" y1="549" x2="620" y2="549" class="sg-arr" marker-end="url(#ar3b)"/><line x1="754" y1="549" x2="772" y2="549" class="sg-arr" marker-end="url(#ar3b)"/>
+      <path d="M880,496 L880,510 L440,510 L440,530" class="sg-arr fx-st" marker-end="url(#ar3a)"/>
+      <text x="480" y="612" text-anchor="middle" class="sg-sub2">依据：纷享帮助中心《LTO 业务流程总览》help.fxiaoke.com/94b2/eebd/a0e3 · 销售易 SFA-01~26 系列 · 华为云市场旗舰版手册</text>
+    </svg>
+    <figcaption><b>图 3-1</b> ｜ L2C 泳道图：五个角色协作跑完六个阶段，橙色为主链路，虚线为支撑动作，底部为订单后延伸</figcaption>
+  </figure>
+
+  <h4>逐阶段拆解：对象 · 角色 · 规则</h4>
+  <ol class="steps">
+    <li><b>市场获客</b>　对象：市场活动、活动成员、销售线索。动作：创建活动、维护成员、关联线索、ROI 归因。纷享在此阶段即引入"标讯通"等潜客入口；销售易对应市场活动（SFA-01）与广告数据回流。<span class="mk ok">✅</span></li>
+    <li><b>线索接入、分配与验证</b>　对象：<button class="term" data-term="lead">线索</button>。规则三件套：<strong>查重</strong>（避免撞单）、<strong>评分</strong>（行为积分/智能打分）、<strong>线索池</strong>（分配-回收-保有量）。线索状态机：未分配→待处理→跟进中→已转换/无效/已作废。<span class="mk ok">✅</span></li>
+    <li><b>客户与联系人</b>　<strong>先查重再建档</strong>；客户资源经<button class="term" data-term="hai">公海</button>流转（领取/分配/退回/规则回收），公海规则提升资源利用率——官方特别注明"公海不等同于客户生命周期本身"。<span class="mk ok">✅</span></li>
+    <li><b>商机推进</b>　对象：商机、商机明细、商机联系人、<button class="term" data-term="juecelian">决策链</button>。销售流程 = 进行中阶段 + 终结阶段，每阶段可配停留时长、提醒、审批、进入/完成条件、是否允许跳过，支持多套流程并存（如按行业/产品线）；输出赢单/输单/无效。销售易对应销售阶段（SFA-12）、关键事件（SFA-13）、作战地图（SFA-16）。<span class="mk ok">✅</span></li>
+    <li><b>产品配置、定价与报价（CPQ）</b>　链路：产品与分类→属性与<button class="term" data-term="bom">BOM</button>→可售范围→价目表→报价单→订单。注意：<strong>价格政策（折扣/减价/买赠）与价目表是两个概念</strong>——价目表定基准价，价格政策定让利规则。<span class="mk ok">✅</span></li>
+    <li><b>确认交易</b>　对象：销售订单、订单产品、销售合同。四种成交模式：<strong>报价转订单 / 框架合同分批执行（合同→多订单）/ 订单关联合同 / 直接下单</strong>。<span class="mk ok">✅</span></li>
+  </ol>
+  <div class="callout"><b class="t">三类运行基础能力</b>（纷享官方从 LTO 总览中提炼，值得背下来）：<strong>客户数据基础</strong>（查重、归属、公海、保有量、权力地图）；<strong>交易基础</strong>（产品与单位、价目表、可售范围、价格政策、信用规则）；<strong>过程分析</strong>（营销归因、阶段转化、滞留、流失、输赢单分析）。</div>
+
+  <h3 id="c3-after"><span class="sn">3.2</span>订单后延伸：从 Order 到 Cash 的中国化改造</h3>
+  <p>Salesforce 经典模型到 Order 基本收尾；中国 CRM 因为<strong>赊销普遍 + 经销商体系复杂</strong>，必须把财务语义接进来。纷享的"收入管理"给出了教科书级的三类立应收场景：</p>
+  <div class="grid2">
+    <div class="mini"><h5>周期性立应收</h5>订阅/循环计费场景：按周期自动生成本期应收，SaaS、租赁、维保类业务的核心。</div>
+    <div class="mini"><h5>合约立应收</h5>基于合同或订单的付款计划生成应收，配合回款计划跟踪与预警。</div>
+    <div class="mini"><h5>结算立应收</h5>基于实际交付结果（对账单/结算单）生成应收，工程、贸易类业务常用。</div>
+    <div class="mini"><h5>销售易的对应设计</h5>回款计划 → 回款记录核销 → 开票申请 → 收入确认计划（华为云手册第五章专门章节），另设合同变更单管控。<span class="mk ok">✅</span></div>
+  </div>
+
+  <h3 id="c3-svc"><span class="sn">3.3</span>售后服务流程：一条工单的完整闭环</h3>
+  <figure class="fig">
+    <svg viewBox="0 0 960 330" role="img" aria-label="服务工单流程">
+      <defs><marker id="ar3c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m3c"/></marker></defs>
+      <style>.m3c{fill:var(--muted)}</style>
+      <g text-anchor="middle">
+        <rect x="24" y="30" width="140" height="52" rx="9" class="neo-b"/><text x="94" y="52" class="sg-sub">全渠道报修</text><text x="94" y="68" class="sg-sub2">电话/APP/小程序/邮件</text>
+        <rect x="196" y="30" width="140" height="52" rx="9" class="neo-b"/><text x="266" y="52" class="sg-sub">工单受理</text><text x="266" y="68" class="sg-sub2">规则分配 + SLA</text>
+        <rect x="368" y="30" width="140" height="52" rx="9" class="neo-b"/><text x="438" y="52" class="sg-sub">派工调度</text><text x="438" y="68" class="sg-sub2">技能/位置匹配·甘特图</text>
+        <rect x="540" y="30" width="140" height="52" rx="9" class="neo-b"/><text x="610" y="52" class="sg-sub">现场服务</text><text x="610" y="68" class="sg-sub2">签到·SOP·拍照留证</text>
+        <rect x="712" y="30" width="110" height="52" rx="9" class="neo-b"/><text x="767" y="52" class="sg-sub">备件领用</text><text x="767" y="68" class="sg-sub2">库存联动</text>
+        <rect x="24" y="130" width="140" height="52" rx="9" class="neo-b"/><text x="94" y="152" class="sg-sub">费用结算</text><text x="94" y="168" class="sg-sub2">审批流+自动结算</text>
+        <rect x="196" y="130" width="140" height="52" rx="9" class="neo-b"/><text x="266" y="152" class="sg-sub">评价回访</text><text x="266" y="168" class="sg-sub2">满意度·自动回访</text>
+        <rect x="368" y="130" width="140" height="52" rx="9" class="neo-b"/><text x="438" y="152" class="sg-sub">维保续约</text><text x="438" y="168" class="sg-sub2">服务合同·套餐复购</text>
+        <rect x="560" y="130" width="180" height="52" rx="9" class="gold-b"/><text x="650" y="152" class="sg-sub">服务经营分析</text><text x="650" y="168" class="sg-sub2">续保/备件增值商机</text>
+      </g>
+      <line x1="164" y1="56" x2="192" y2="56" class="sg-arr" marker-end="url(#ar3c)"/><line x1="336" y1="56" x2="364" y2="56" class="sg-arr" marker-end="url(#ar3c)"/>
+      <line x1="508" y1="56" x2="536" y2="56" class="sg-arr" marker-end="url(#ar3c)"/><line x1="680" y1="56" x2="708" y2="56" class="sg-arr" marker-end="url(#ar3c)"/>
+      <path d="M767,82 L767,156 L516,156" class="sg-arr" marker-end="url(#ar3c)"/>
+      <line x1="164" y1="156" x2="192" y2="156" class="sg-arr" marker-end="url(#ar3c)"/><line x1="336" y1="156" x2="364" y2="156" class="sg-arr" marker-end="url(#ar3c)"/>
+      <line x1="508" y1="156" x2="556" y2="156" class="sg-arr" marker-end="url(#ar3c)"/>
+      <rect x="770" y="118" width="166" height="76" rx="9" class="sg-box2" stroke-dasharray="4 3"/>
+      <text x="853" y="140" text-anchor="middle" class="sg-sub">服务商模式（双方都有）</text>
+      <text x="853" y="158" text-anchor="middle" class="sg-sub2">准入签约 · 服务商备件仓</text>
+      <text x="853" y="174" text-anchor="middle" class="sg-sub2">过程跟踪 · 费用自动结算</text>
+      <text x="480" y="230" text-anchor="middle" class="sg-lbl-s">上游支撑：设备档案（一物一码/IoT 监测）· 服务知识库 · 智能客服机器人 · 客户自助报修门户</text>
+      <text x="480" y="256" text-anchor="middle" class="sg-sub2">设计要点：服务团队不只是成本中心——回访与经营分析环节刻意设计成"二次商机挖掘"入口（续保/增购）</text>
+      <text x="480" y="300" text-anchor="middle" class="sg-sub2">依据：纷享服务通用户操作指南 help.fxiaoke.com/1e99/bd0d/e06b · servicecloud.fxiaoke.com · 销售易服务云 xiaoshouyi.com/xcy</text>
+    </svg>
+    <figcaption><b>图 3-2</b> ｜ 售后服务闭环：从报修到续约的 9 个环节，两家产品环节一致、支撑细节各有侧重</figcaption>
+  </figure>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">服务云实现对照</span><span class="duo-q">同一个闭环，不同的行业纵深</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享 · 服务通/服务云</span>
+        <ul><li>12 大模块：现场服务、智能客服云、自助服务、设备资产管理（IoT 实时监测预警）、预防性/预测性维护、备件（SBOM 快速定位）、知识库、服务商、寄送修、项目管理、经营分析<span class="mk ok">✅</span></li>
+        <li>行业包按装备细分：工业机器人、电力设备、医疗设备、IVD、激光装备、储能<span class="mk ok">✅</span></li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易 · 服务云/现场服务云</span>
+        <ul><li>全渠道一个工作台；工单字段/分配规则可自定义，支持合并转移；SLA 规则、审批流<span class="mk ok">✅</span></li>
+        <li>派工调度：智能推荐 + 甘特图调度台；工程师 APP 拍照视频留证、服务报告、客户签名<span class="mk ok">✅</span></li>
+        <li>返修寄修：故障代码、维修模板、物流追踪、在线支付；服务商费用自动结算<span class="mk ok">✅</span></li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：服务域的产品难点不在工单表单，而在<strong>调度（人-技能-位置-配件匹配）</strong>与<strong>结算（服务商费用自动计算）</strong>两处，以及设备档案这一"连接销售与服务"的数据枢纽。</div>
+  </div>
+
+  <h3 id="c3-channel"><span class="sn">3.4</span>渠道协作流程：报备 → 订货 → 返利闭环</h3>
+  <figure class="fig">
+    <svg viewBox="0 0 960 340" role="img" aria-label="渠道订货返利闭环">
+      <defs><marker id="ar3d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m3d"/></marker></defs>
+      <style>.m3d{fill:var(--muted)}</style>
+      <rect x="24" y="30" width="170" height="280" rx="12" class="fx-b"/>
+      <text x="109" y="62" text-anchor="middle" class="sg-lbl">厂商（品牌商）</text>
+      <text x="109" y="92" text-anchor="middle" class="sg-sub2">渠道政策/价格/返利方案</text>
+      <text x="109" y="112" text-anchor="middle" class="sg-sub2">联合营销活动</text>
+      <text x="109" y="140" text-anchor="middle" class="sg-sub2">专属销售流程分阶段校验</text>
+      <text x="109" y="160" text-anchor="middle" class="sg-sub2">发货 · 渠道库存可视</text>
+      <text x="109" y="188" text-anchor="middle" class="sg-sub2">报数通：分区域数据上报</text>
+      <text x="109" y="216" text-anchor="middle" class="sg-sub2">伙伴学堂：培训考试认证</text>
+      <text x="109" y="244" text-anchor="middle" class="sg-sub2">跨企业审批 · 互联企信</text>
+      <text x="109" y="284" text-anchor="middle" class="sg-sub2" style="fill:var(--fx-deep)">纷享：企业互联 CPaaS</text>
+      <rect x="766" y="30" width="170" height="280" rx="12" class="neo-b"/>
+      <text x="851" y="62" text-anchor="middle" class="sg-lbl">经销商 / 伙伴</text>
+      <text x="851" y="92" text-anchor="middle" class="sg-sub2">客户报备（防撞单）</text>
+      <text x="851" y="112" text-anchor="middle" class="sg-sub2">商机联合推进</text>
+      <text x="851" y="140" text-anchor="middle" class="sg-sub2">订货商城在线下单</text>
+      <text x="851" y="160" text-anchor="middle" class="sg-sub2">支付：预存款/返利/信用</text>
+      <text x="851" y="188" text-anchor="middle" class="sg-sub2">物流查询 · 收货</text>
+      <text x="851" y="216" text-anchor="middle" class="sg-sub2">对账：账单→申诉→确认</text>
+      <text x="851" y="244" text-anchor="middle" class="sg-sub2">返利：方案→计算→上账</text>
+      <text x="851" y="284" text-anchor="middle" class="sg-sub2" style="fill:var(--neo-deep)">销售易：伙伴云 PRM</text>
+      <g text-anchor="middle">
+        <rect x="240" y="46" width="480" height="40" rx="9" class="sg-box2"/><text x="480" y="71" class="sg-lbl-s">① 报备防撞单 —— 伙伴先报备客户，厂商裁决冲突，保护各自投入</text>
+        <rect x="240" y="102" width="480" height="40" rx="9" class="sg-box2"/><text x="480" y="127" class="sg-lbl-s">② 联合售单 —— 报备客户转化为联合商机，按伙伴专属销售流程推进</text>
+        <rect x="240" y="158" width="480" height="40" rx="9" class="sg-box2"/><text x="480" y="183" class="sg-lbl-s">③ 在线订货 —— 订货商城下单（不同伙伴不同价格）→ 支付 → 发货物流</text>
+        <rect x="240" y="214" width="480" height="40" rx="9" class="sg-box2"/><text x="480" y="239" class="sg-lbl-s">④ 对账返利 —— 自动生成账单 → 在线申诉/确认 → 返利计算上账（多账户）</text>
+      </g>
+      <line x1="198" y1="66" x2="236" y2="66" class="sg-arr" marker-end="url(#ar3d)"/><line x1="724" y1="66" x2="762" y2="66" class="sg-arr" marker-end="url(#ar3d)"/>
+      <line x1="198" y1="122" x2="236" y2="122" class="sg-arr" marker-end="url(#ar3d)"/><line x1="724" y1="122" x2="762" y2="122" class="sg-arr" marker-end="url(#ar3d)"/>
+      <line x1="198" y1="178" x2="236" y2="178" class="sg-arr" marker-end="url(#ar3d)"/><line x1="724" y1="178" x2="762" y2="178" class="sg-arr" marker-end="url(#ar3d)"/>
+      <line x1="198" y1="234" x2="236" y2="234" class="sg-arr" marker-end="url(#ar3d)"/><line x1="724" y1="234" x2="762" y2="234" class="sg-arr" marker-end="url(#ar3d)"/>
+      <text x="480" y="296" text-anchor="middle" class="sg-sub">核心机制：客户报备是渠道 CRM 的"第一规则"——先解决"谁是这个客户的销售"的争端，才有后面的协作</text>
+      <text x="480" y="322" text-anchor="middle" class="sg-sub2">依据：fxiaoke.com/ap/product-outer、/ap/qy-price-detail · help.fxiaoke.com/83d7（渠道管理）· xiaoshouyi.com/prm</text>
+    </svg>
+    <figcaption><b>图 3-3</b> ｜ 渠道生意闭环：报备、联合售单、订货、对账返利四段机制，厂商与伙伴各自的操作界面</figcaption>
+  </figure>
+  <div class="callout gold"><b class="t">架构伏笔</b>：这条流程里伙伴用不用你的 CRM？纷享的答案是<strong>伙伴也是独立租户，通过"企业互联"跨租户协作</strong>（下游可能因此整体上纷享，形成链式获客）；销售易的答案是<strong>伙伴云是厂商租户内的 PRM 模块，通过企微上下游触达伙伴</strong>。同一个流程，两种架构选择——第 5 章 5.4 展开。</div>
+
+  <h3><span class="sn">3.5</span>营销获客流程（简述）</h3>
+  <p>投放（腾讯 DMP/广告 API 回流）→ 集客（活动/活码/表单/名片扫描）→ <strong>线索池与规则分配</strong> → 企微私域培育（SOP/素材/朋友圈）→ 行为埋点提醒跟进 → 转商机 → <strong>ROI 渠道分析反哺投放</strong>。营销域的关键设计是把"投放钱花得值不值"做成归因分析闭环，并用 CDP 标签把客户分层运营。<span class="mk ok">✅</span></p>
+
+  <div class="recap"><h4>本章要点</h4><ul>
+    <li>L2C 六阶段：市场获客 → 线索接入分配验证 → 客户与联系人 → 商机推进 → CPQ → 确认交易；每阶段记住"对象 + 角色 + 规则"三要素。</li>
+    <li>三条产品化规则是 CRM 的灵魂：公海（资源流转）、商机阶段推进器（过程管理）、价格政策/价目表分离（交易管控）。</li>
+    <li>订单后延伸（三类立应收 + 回款核销 + 开票收入确认）是中国交易环境的必然产物。</li>
+    <li>服务闭环的难点在调度与结算；渠道闭环的第一规则是报备防撞单。</li>
+  </ul></div>
+  <details class="src"><summary>本节来源</summary><ul>
+    <li>纷享《LTO 业务流程总览》：https://help.fxiaoke.com/94b2/eebd/a0e3（六阶段、三类基础能力、上线方法论）</li>
+    <li>纷享收入管理：https://help.fxiaoke.com/94b2/eebd/17fd · CPQ：/94b2/eebd/ba78</li>
+    <li>纷享服务通操作指南：https://help.fxiaoke.com/1e99/bd0d/e06b · 渠道管理：/83d7</li>
+    <li>销售易 SFA-01~26 与 Admin 系列目录：https://service.xiaoshouyi.com/ · 服务云：/xcy · 伙伴云：/prm</li>
+    <li>华为云市场《销售易 CRM 用户操作手册》2023（合同/回款/收入确认章节）</li>
+  </ul></details>
+</section>
+
+<!-- ================= 第4章 核心功能 ================= -->
+<section class="chapter reveal" id="c4">
+  <header class="ch-head">
+    <div class="kicker">Part 4 · 核心功能</div>
+    <h2>第 4 章 · 核心功能详解</h2>
+    <div class="ch-no">04</div>
+    <p class="lede">全书重心。按"域 → 对象 → 功能"展开：先用一张 ER 图建立对象模型的地基，再逐域看功能设计与两家的实现差异。每个功能都回答三个问题：是什么、解决什么问题、配置入口在哪。</p>
+  </header>
+  <div class="goals"><b>学习目标</b><ul>
+    <li>背下 9 大标准对象及其关系，能默画 ER 图；</li>
+    <li>对每个域能说出"支撑该业务的关键功能 + 两家实现差异"；</li>
+    <li>建立"功能 ↔ 业务问题"的映射直觉，而非功能清单记忆。</li>
+  </ul></div>
+
+  <h3 id="c4-obj"><span class="sn">4.1</span>对象模型层：CRM 的地基</h3>
+  <p>所有 CRM 功能都是围绕一组标准对象展开的。先看全景，再逐个拆——这是学习任何 CRM 产品最高效的切入点。</p>
+  <figure class="fig">
+    <svg viewBox="0 0 960 590" role="img" aria-label="核心对象 ER 图">
+      <defs><marker id="ar4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m4a"/></marker></defs>
+      <style>.m4a{fill:var(--muted)}</style>
+      <!-- Row1 -->
+      <rect x="30" y="34" width="170" height="74" rx="10" class="sg-box2"/>
+      <text x="115" y="58" text-anchor="middle" class="sg-lbl">市场活动</text><text x="115" y="74" text-anchor="middle" class="sg-sub2">Campaign · 预算/ROI</text><text x="115" y="90" text-anchor="middle" class="sg-sub2">活动成员 · 渠道来源</text>
+      <rect x="260" y="34" width="170" height="74" rx="10" class="fx-b"/>
+      <text x="345" y="58" text-anchor="middle" class="sg-lbl">线索 Lead</text><text x="345" y="74" text-anchor="middle" class="sg-sub2">来源 · 评分 · 状态机</text><text x="345" y="90" text-anchor="middle" class="sg-sub2">所属线索池/公海</text>
+      <rect x="520" y="34" width="170" height="74" rx="10" class="neo-b" style="stroke-width:2"/>
+      <text x="605" y="58" text-anchor="middle" class="sg-lbl">客户 Account</text><text x="605" y="74" text-anchor="middle" class="sg-sub2">客户树/集团 · 360</text><text x="605" y="90" text-anchor="middle" class="sg-sub2">归属人 · 公海 · 查重</text>
+      <rect x="770" y="34" width="160" height="74" rx="10" class="sg-box2"/>
+      <text x="850" y="58" text-anchor="middle" class="sg-lbl">联系人 Contact</text><text x="850" y="74" text-anchor="middle" class="sg-sub2">职务 · 决策角色</text><text x="850" y="90" text-anchor="middle" class="sg-sub2">名片扫描 · 权力地图</text>
+      <!-- Row2 -->
+      <rect x="60" y="210" width="170" height="74" rx="10" class="gold-b"/>
+      <text x="145" y="234" text-anchor="middle" class="sg-lbl">产品 Product</text><text x="145" y="250" text-anchor="middle" class="sg-sub2">分类 · 属性 · 销售BOM</text><text x="145" y="266" text-anchor="middle" class="sg-sub2">价目表 · 可售范围</text>
+      <rect x="520" y="210" width="170" height="74" rx="10" class="neo-b" style="stroke-width:2"/>
+      <text x="605" y="234" text-anchor="middle" class="sg-lbl">商机 Opportunity</text><text x="605" y="250" text-anchor="middle" class="sg-sub2">阶段 · 金额 · 赢率</text><text x="605" y="266" text-anchor="middle" class="sg-sub2">商机明细 · 决策链</text>
+      <!-- Row3 -->
+      <rect x="290" y="386" width="170" height="74" rx="10" class="sg-box2"/>
+      <text x="375" y="410" text-anchor="middle" class="sg-lbl">报价单 Quote</text><text x="375" y="426" text-anchor="middle" class="sg-sub2">报价明细 · 折扣</text><text x="375" y="442" text-anchor="middle" class="sg-sub2">审批 · 有效期</text>
+      <rect x="530" y="386" width="150" height="74" rx="10" class="sg-box2"/>
+      <text x="605" y="410" text-anchor="middle" class="sg-lbl">合同 Contract</text><text x="605" y="426" text-anchor="middle" class="sg-sub2">条款 · 变更单</text><text x="605" y="442" text-anchor="middle" class="sg-sub2">回款计划 · 续签</text>
+      <rect x="760" y="386" width="150" height="74" rx="10" class="sg-box2"/>
+      <text x="835" y="410" text-anchor="middle" class="sg-lbl">订单 Order</text><text x="835" y="426" text-anchor="middle" class="sg-sub2">订单产品明细</text><text x="835" y="442" text-anchor="middle" class="sg-sub2">框架分批执行</text>
+      <!-- Row4 -->
+      <rect x="640" y="516" width="220" height="56" rx="10" class="gold-b"/>
+      <text x="750" y="540" text-anchor="middle" class="sg-lbl">回款 / 开票 Payment</text><text x="750" y="558" text-anchor="middle" class="sg-sub2">回款计划 · 核销 · 收入确认</text>
+      <!-- 箭头 -->
+      <line x1="200" y1="71" x2="256" y2="71" class="sg-arr" marker-end="url(#ar4a)"/><text x="228" y="62" text-anchor="middle" class="sg-sub2">产出</text>
+      <path d="M430,71 L516,71" class="sg-arrd" marker-end="url(#ar4a)"/><text x="473" y="62" text-anchor="middle" class="sg-sub2" style="fill:var(--fx-deep)">转化</text>
+      <line x1="690" y1="71" x2="766" y2="71" class="sg-arr" marker-end="url(#ar4a)"/><text x="728" y="62" text-anchor="middle" class="sg-sub2">1:N</text>
+      <path d="M605,108 L605,206" class="sg-arr" marker-end="url(#ar4a)"/><text x="632" y="160" class="sg-sub2">1:N</text>
+      <path d="M850,108 L850,240 L694,244" class="sg-arrd" marker-end="url(#ar4a)"/><text x="790" y="190" text-anchor="middle" class="sg-sub2">商机联系人/决策链</text>
+      <path d="M230,247 L516,247" class="sg-arrd" marker-end="url(#ar4a)"/><text x="373" y="238" text-anchor="middle" class="sg-sub2">产品进入报价/订单明细</text>
+      <path d="M605,284 L605,320 L420,320 L420,382" class="sg-arr" marker-end="url(#ar4a)"/><text x="500" y="312" text-anchor="middle" class="sg-sub2">1:N 报价</text>
+      <path d="M460,441 L526,441" class="sg-arr" marker-end="url(#ar4a)"/><text x="493" y="432" text-anchor="middle" class="sg-sub2">报价转订单</text>
+      <path d="M680,430 L756,430" class="sg-arr" marker-end="url(#ar4a)"/><text x="718" y="421" text-anchor="middle" class="sg-sub2">关联/框架分批</text>
+      <path d="M835,460 L835,496 L790,516" class="sg-arr" marker-end="url(#ar4a)"/><text x="862" y="492" class="sg-sub2">订单→回款</text>
+      <path d="M640,446 L610,492 L680,516" class="sg-arrd" marker-end="url(#ar4a)"/><text x="556" y="492" text-anchor="middle" class="sg-sub2">合同→回款计划→回款</text>
+      <path d="M520,108 L520,420 L464,424" class="sg-arrd" marker-end="url(#ar4a)"/><text x="470" y="360" text-anchor="middle" class="sg-sub2">客户 1:N 合同</text>
+      <text x="480" y="24" text-anchor="middle" class="sg-sub">实线 = 强关联业务流；虚线 = 弱关联/转化/明细关系。对照 Salesforce：Lead → Account/Contact → Opportunity → Quote → Order</text>
+      <text x="480" y="580" text-anchor="middle" class="sg-sub2">依据：纷享 LTO 总览与销售管理频道 · 销售易 V4.4 手册与 SFA 系列 · Salesforce 标准对象模型</text>
+    </svg>
+    <figcaption><b>图 4-1</b> ｜ 核心对象 ER 图：全书最重要的一张图，建议默画一遍</figcaption>
+  </figure>
+
+  <div class="objgrid">
+    <div class="objcard"><div class="oh"><span class="oen">Lead</span><h4>线索</h4></div><div class="ob"><dl>
+      <dt>定义</dt><dd>未验证的潜在销售机会，"可能是客户也可能不是"</dd>
+      <dt>关键字段</dt><dd>来源渠道、评分/行为积分、状态、所属线索池</dd>
+      <dt>生命周期</dt><dd>未分配→待处理→跟进中→已转换/无效/已作废（无效可重新激活）</dd>
+      <dt>设计要点</dt><dd>线索与客户分离的价值：营销部门可以先批量清洗培育，验证后再"转化"为正式客户，避免脏数据污染客户资产</dd>
+    </dl></div></div>
+    <div class="objcard"><div class="oh"><span class="oen">Account</span><h4>客户</h4></div><div class="ob"><dl>
+      <dt>定义</dt><dd>企业的核心数据资产，360° 视图的中枢对象</dd>
+      <dt>关键字段</dt><dd>分级分类、归属人、工商信息、客户树/集团父子关系</dd>
+      <dt>配套机制</dt><dd>查重规则、公海池（领取/回收/保有量）、权力地图、变更审批（销售易"客户变更单"）</dd>
+      <dt>设计要点</dt><dd>归属人是 CRM 与普通数据库最大的区别：一条客户记录同时是"数据"和"地盘"</dd>
+    </dl></div></div>
+    <div class="objcard"><div class="oh"><span class="oen">Contact</span><h4>联系人</h4></div><div class="ob"><dl>
+      <dt>定义</dt><dd>客户方的人，商机推进的实际操作对象</dd>
+      <dt>关键字段</dt><dd>职务、决策角色（决策链/权力地图节点）、微信/手机</dd>
+      <dt>配套机制</dt><dd>名片扫描、企微侧边栏直接建联系人、团队成员协作</dd>
+      <dt>设计要点</dt><dd>联系人挂在客户下但可关联多个商机——"人"是跨商机的关系资产</dd>
+    </dl></div></div>
+    <div class="objcard"><div class="oh"><span class="oen">Opportunity</span><h4>商机</h4></div><div class="ob"><dl>
+      <dt>定义</dt><dd>有明确成交可能、可推进可预测的销售过程容器</dd>
+      <dt>关键字段</dt><dd>金额、阶段、预计成交日、赢率、商机明细（产品行）</dd>
+      <dt>生命周期</dt><dd>进行中阶段…→赢单/输单/无效；阶段可配任务、审批、停留时长</dd>
+      <dt>设计要点</dt><dd>CRM 价值密度最高的对象：销售方法论（如 BANT）、预测、漏斗全部依附于此</dd>
+    </dl></div></div>
+    <div class="objcard"><div class="oh"><span class="oen">Product / Price Book</span><h4>产品与价目</h4></div><div class="ob"><dl>
+      <dt>定义</dt><dd>可交易物的目录与定价体系</dd>
+      <dt>关键字段</dt><dd>产品分类、属性、销售 BOM、单位、成本/标准价</dd>
+      <dt>配套机制</dt><dd>价目表（基准价）、价格政策（折扣/减价/买赠）、可售范围（谁能卖什么）</dd>
+      <dt>设计要点</dt><dd>"价目表定基准、价格政策定让利、可售范围定权限"三分离是中国交易 CRM 的成熟设计</dd>
+    </dl></div></div>
+    <div class="objcard"><div class="oh"><span class="oen">Quote</span><h4>报价单</h4></div><div class="ob"><dl>
+      <dt>定义</dt><dd>给客户的正式价格方案，CPQ 的输出物</dd>
+      <dt>关键字段</dt><dd>报价明细行、折扣、有效期、版本</dd>
+      <dt>配套机制</dt><dd>折扣审批流、特价申请、选装选配在线核价（销售易）</dd>
+      <dt>设计要点</dt><dd>报价是"内部管控与客户沟通"的交界：对内要审批留痕，对外要美观可发</dd>
+    </dl></div></div>
+    <div class="objcard"><div class="oh"><span class="oen">Contract</span><h4>合同</h4></div><div class="ob"><dl>
+      <dt>定义</dt><dd>法律生效的成交约定，驱动回款计划</dd>
+      <dt>关键字段</dt><dd>合同额、期限、回款计划、条款（AI 抽取）</dd>
+      <dt>配套机制</dt><dd>合同审批流、变更单（生成/编辑/审批）、进度与续签管理</dd>
+      <dt>设计要点</dt><dd>框架合同→多订单分批执行，是 B2B 大客户交易的常见形态</dd>
+    </dl></div></div>
+    <div class="objcard"><div class="oh"><span class="oen">Order</span><h4>订单</h4></div><div class="ob"><dl>
+      <dt>定义</dt><dd>交付与收入的执行起点</dd>
+      <dt>关键字段</dt><dd>订单产品、数量价格、关联合同、发货状态</dd>
+      <dt>四种成交模式</dt><dd>报价转订单 / 框架合同分批执行 / 订单关联合同 / 直接下单</dd>
+      <dt>设计要点</dt><dd>订单向下连接库存/ERP 与应收，是 CRM 与后端系统的边界对象</dd>
+    </dl></div></div>
+    <div class="objcard full"><div class="oh"><span class="oen">Payment / Receivable</span><h4>回款与应收</h4></div><div class="ob"><dl>
+      <dt>定义</dt><dd>钱的到账记录与应收回立（中国 CRM 的特色对象）</dd>
+      <dt>关键字段</dt><dd>回款计划、回款记录、核销关系、发票、收入确认计划</dd>
+      <dt>配套机制</dt><dd>三类立应收（周期性/合约/结算）、信用规则、逾期预警</dd>
+      <dt>设计要点</dt><dd>Salesforce 到 Order 即止，中国 CRM 必须延长到 Cash——赊销与经销商体系决定了"签单≠收款"</dd>
+    </dl></div></div>
+  </div>
+
+  <h3 id="c4-sales"><span class="sn">4.2</span>销售域：把销售管理思想做成规则引擎</h3>
+  <p>销售域是 SFA 内核。学习时别盯着功能清单，而要看<strong>每个功能背后管理的是哪种销售问题</strong>：</p>
+
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">功能 ① ｜ 公海池：客户资源的流转与再分配</span><span class="duo-q">解决的问题：销售把客户"捂死"在手里</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客</span>
+        <ul><li>配置项：客户查重规则、归属规则、创建识别与审批、客户树/组织架构、保有量上限<span class="mk ok">✅</span></li>
+        <li>公海动作：领取、分配、退回、<strong>规则回收</strong>（超期未跟进自动收回）</li>
+        <li>线索侧同构：线索池 + 智能分配 + 回收 + 保有量</li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易</span>
+        <ul><li>线索公海池（SFA-07）与客户公海池（SFA-09）分设，规则精细化可定制<span class="mk ok">✅</span></li>
+        <li>分组成员可见性（池内可见范围控制）、无进展线索循环回收</li>
+        <li>团队成员继承（Admin-07）：流转时协作成员权限跟着走</li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：公海的五个规则要素——<strong>准入（谁能领）、查重（防撞）、保有量（最多持有多少）、回收（多久不动收回）、保护期（新客户保护）</strong>。它本质是把"销售资源管理制度"做成了配置化规则引擎。</div>
+  </div>
+
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">功能 ② ｜ 商机过程管理：销售方法论的产品化</span><span class="duo-q">解决的问题：销售过程黑箱、预测拍脑袋</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客</span>
+        <ul><li><strong>阶段推进器</strong>：多套销售流程并存；每阶段可配停留时长、提醒、审批、进入/完成条件、是否允许跳过<span class="mk ok">✅</span></li>
+        <li>商机查重与新建审批、商机保有量上限、决策链模板</li>
+        <li>AI：健康度评估、赢单策略、作战地图</li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易</span>
+        <ul><li>销售阶段可配推进/推回规则（SFA-12）、关键事件与关键信息（SFA-13/14）<span class="mk ok">✅</span></li>
+        <li><strong>销售业绩拆分</strong>（SFA-15）：等额/超额、金额/百分比——多方协作单怎么算业绩</li>
+        <li>商机作战地图（SFA-16）、推进排行榜（SFA-20）、周期更新计划（SFA-21）</li>
+        <li>NeoAgent：商机查重、可解释健康度评分（CCS/BANT）</li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>："阶段推进器"与"销售阶段推退"是同一设计的两种命名。注意<strong>业绩拆分</strong>这种中国团队作战特色功能——一个单子多人协作时怎么分业绩，美国产品里反而少见。</div>
+  </div>
+
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">功能 ③ ｜ 销售行为与赋能：管"动作"而不只管"结果"</span><span class="duo-q">解决的问题：拜访造假、过程失真、新人不会卖</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客</span>
+        <ul><li>拜访管理、外勤考勤；快消行业有八大拜访模式 + PDCA 模型（零代码配置）<span class="mk ok">✅</span></li>
+        <li>会议赋能：会前简报、会中信号识别、会后待办；语音写销售记录 + AI 质检<span class="mk ok">✅</span></li>
+        <li>企信/客群：沟通与 CRM 数据天然一体</li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易</span>
+        <ul><li>活动记录（SFA-06）、日程、工作报告、考勤统计、签到地图<span class="mk ok">✅</span></li>
+        <li>呼叫中心：一键拨号/来电弹屏/三方通话（集成容联七陌，第三方语音）<span class="mk ok">✅</span></li>
+        <li>NeoAgent：多渠道活动记录自动录入、录音总结回填</li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：行为管理的悖论是"管太死销售反感、管太松没数据"。两家的解法一致：<strong>把记录动作做得越轻越好</strong>（语音、自动录入、扫码签到），再用 AI 补全总结。</div>
+  </div>
+
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">功能 ④ ｜ 目标管理与预测</span><span class="duo-q">解决的问题：指标怎么拆、数字怎么报</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客</span>
+        <ul><li>BI 内多维度目标管理：按人员/部门/客户/产品设目标，实时完成率<span class="mk ok">✅</span></li>
+        <li>销售预测：基于商机漏斗 + 历史成交权重预测</li>
+        <li>智能销售预测（渠道侧）：自下而上数据采集</li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易</span>
+        <ul><li>目标管理：区域/行业/产品线/团队多维制定、在线录入与导入、实时进度<span class="mk ok">✅</span></li>
+        <li>区域管理三件套：区域管理/区域维度/区域模型（SFA-22~25）</li>
+        <li>商机"年度预测与调整额"：销售直报 + 管理调整双口径（旗舰版手册）</li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：预测的成熟做法是"<strong>自下而上商机滚动 + 自上而下目标校准</strong>"双轨制；AI 时代的增量是让预测自动解释偏差原因（两家分析师 Agent 的核心场景）。</div>
+  </div>
+
+  <h3 id="c4-deal"><span class="sn">4.3</span>交易域：CPQ 与合同订单管控</h3>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">功能 ⑤ ｜ CPQ：复杂产品的报价配置</span><span class="duo-q">解决的问题：非标产品报不上价、折扣失控</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客</span>
+        <ul><li>完整链路：产品分类→产品属性→<strong>销售 BOM</strong>→可售范围→价目表→报价单→订单<span class="mk ok">✅</span></li>
+        <li>价格政策（折扣/减价/买赠）与价目表分离；允销管理、促销管理</li>
+        <li>非标产品交易：BOM 支持选配后再核价</li>
+        <li>配置入口：管理员配置指南「CPQ 配置」专章</li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易</span>
+        <ul><li>价格与折扣统一管控：产品特征-成本-利润率联动核价<span class="mk ok">✅</span></li>
+        <li><strong>选装选配快速报价</strong>：拆解设备配置项、维护标准成本、在线配置核价——装备制造方案的三大行业化亮点之一<span class="mk ok">✅</span></li>
+        <li>官方称 Gartner CPQ 能力评分第一<span class="mk warn">⚠️ 自述口径</span></li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：CPQ 的复杂度台阶是——标准品报价（价目表就够）→ 规则折扣（价格政策）→ 配置选型（BOM/选装）→ 非标核算（成本联动）。采购 CRM 时按自己业务的台阶选深度即可，不必追求顶配。</div>
+  </div>
+  <div class="callout"><b class="t">合同与订单的管控设计</b>：两家都把"审批 + 变更单"作为合同订单的两大管控器——合同/客户变更都要走变更单（生成→编辑→审批），保留完整版本痕迹；订单四种成交模式（报价转订单/框架分批/关联合同/直接下单）覆盖了 B2B 交易的主要形态。<span class="mk ok">✅</span></div>
+
+  <h3 id="c4-mkt"><span class="sn">4.4</span>营销域：从"发广告"到"线索工厂"</h3>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">营销云对照</span><span class="duo-q">一个重全渠道与 CDP，一个重企微私域</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享 · 营销通/营销云</span>
+        <ul><li>八大场景：全渠道获客及 ROI、活动营销 EMS、内容营销 CMS、社交营销 SCRM、营销协同、<strong>CDP</strong>、线索工作台、出海营销<span class="mk ok">✅</span></li>
+        <li>CDP：OneID 身份、行为/属性评分、自动化标签、自动化运营</li>
+        <li>SDR Agent：多源数据整合、自动化线索转化；出海支持 WhatsApp/Zapier/多语官网</li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易 · 营销云/企微 SCRM</span>
+        <ul><li>企微深度融合：<strong>智能活码</strong>（扫码自动分配+欢迎语）、智能名片（访问轨迹）、微信客服、视频号<span class="mk ok">✅</span></li>
+        <li>私域运营：销售 SOP / 群 SOP、朋友圈运营、素材中心（浏览埋点提醒销售）、智能话术</li>
+        <li><strong>会话存档合规</strong> + 敏感词质检 + 智能会话总结</li>
+        <li>广告回流：腾讯 DMP 曝光-点击-留资-成交闭环</li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：营销域的功能分层——<strong>获客（渠道）→ 识别（评分/标签）→ 培育（SOP/内容）→ 交接（线索池）→ 归因（ROI）</strong>。中国 CRM 营销域的独特筹码是企微：会话存档让"沟通记录"第一次成为可管理的合规数据。</div>
+  </div>
+
+  <h3 id="c4-svc"><span class="sn">4.5</span>服务域：工单之外的三张网</h3>
+  <p>第 3.3 节已拆解工单闭环，这里补全功能视角。服务云 = <strong>工单网 + 设备网 + 伙伴网</strong>：</p>
+  <table class="tbl">
+    <tr><th style="width:20%">子网</th><th>核心功能</th><th>两家的差异点</th></tr>
+    <tr><td><b>工单网</b></td><td>全渠道接入、工单流转、SLA、智能派单、调度台（甘特图）、服务报告、评价回访</td><td>纷享"服务商协同"独立成网；销售易返修寄修更细（故障代码/维修模板/物流/在线支付）</td></tr>
+    <tr><td><b>设备网</b></td><td>设备档案（一物一码）、维保计划、IoT 监测预警、预防性/预测性维护、备件库存（多级/共享调拨/SBOM）</td><td>纷享强调 IoT 实时监测与按使用量触发维护；销售易强调备件流转跟踪与库存预警</td></tr>
+    <tr><td><b>伙伴网</b></td><td>服务商准入签约、服务商门户、工单协同、备件仓、费用自动结算</td><td>两家均有；纷享把服务商网与渠道域打通（同一伙伴体系）</td></tr>
+  </table>
+  <p style="font-size:13px;color:var(--muted)">依据：servicecloud.fxiaoke.com（12 大模块）· xiaoshouyi.com/xcy · 两家帮助中心服务频道。<span class="mk ok">✅</span></p>
+
+  <h3 id="c4-prm"><span class="sn">4.6</span>渠道域：厂商视角的伙伴经营</h3>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">渠道产品对照</span><span class="duo-q">纷享"通"字辈全家桶 vs 销售易伙伴云单模块</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客</span>
+        <ul><li><strong>代理通</strong>：连接代理商——客户报备、商机联合推进（专属销售流程分阶段校验）、联合营销、渠道目标与洞察<span class="mk ok">✅</span></li>
+        <li><strong>订货通</strong>：在线订货商城、多支付（微信/支付宝/预存款/返利/信用）、促销（满赠/满减/组合/积分）、不同经销商不同价格、物流查询<span class="mk ok">✅</span></li>
+        <li><strong>报数通</strong>：分区域分层级数据上报与审核；互联网盘（渠道库存上报）<span class="mk ok">✅</span></li>
+        <li>TPM 费用管理：活动方案→举证→检核→核销；外勤访销（快消八大拜访模式）</li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易</span>
+        <ul><li><strong>伙伴云</strong>一体：渠道生命周期管理（准入→评估→协议→退出）、按产品/价格/区域的经销商授权<span class="mk ok">✅</span></li>
+        <li>订货商城 + 促销管理（买赠/打折/满减/特价）+ 多账户（现金/返利/积分/信用）</li>
+        <li><strong>返利管理</strong>：方案制定→计算→确认→上账；对账管理：账单自动生成→在线申诉→确认<span class="mk ok">✅</span></li>
+        <li>企微上下游：上下游群聊 + 数字渠道空间小程序；渠道经理 Agent 智能拜访规划</li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：渠道域的功能密度反映行业权重——纷享在快消/农资打透了"订货 + 促销 + 费用 + 访销"，销售易用单模块 + 企微连接覆盖通用场景。共同的核心对象是<strong>返利账户</strong>（现金/返利/积分/信用四类余额）。</div>
+  </div>
+
+  <h3 id="c4-bi"><span class="sn">4.7</span>协同、分析与 AI：让数据被用起来</h3>
+  <div class="grid2">
+    <div class="mini"><h5>协同域（纷享特色：OA 与 CRM 同源）</h5>
+      <ul><li>企信：企业内 + <strong>互联企业间</strong> IM；客群：按 CRM 客户一键建群（团队成员/上下游入群）</li>
+      <li>工作日志/审批/考勤/网盘均可关联 CRM 对象<span class="mk ok">✅</span></li>
+      <li>销售易对应：企微侧边栏内直接创建商机/订单/合同/工单、腾讯会议集成</li></ul></div>
+    <div class="mini"><h5>分析域</h5>
+      <ul><li>纷享 BI：七大分析场景、报表/统计图/拼表、数据驾驶舱、<strong>字段级 BI 权限继承 PaaS 角色体系</strong><span class="mk ok">✅</span></li>
+      <li>销售易 NeoBI：全员/敏捷/嵌入式/协同 BI 四形态；<strong>数据穿透</strong>（分析一键跳转业务操作）；与 CRM 原生一体免建模<span class="mk ok">✅</span></li></ul></div>
+  </div>
+  <h4>AI 能力层：按角色的 Agent 分发</h4>
+  <table class="tbl">
+    <tr><th style="width:14%">角色</th><th>纷享销客 Agents <span class="tag-fx">FX</span></th><th>销售易 Agents <span class="tag-neo">Neo</span></th></tr>
+    <tr><td>营销</td><td>高潜客户识别、意向解析、个性化内容、培育策略（SDR Agent）</td><td>存量洞察、Top 潜客推荐、个性化推送</td></tr>
+    <tr><td>销售</td><td>关系洞察、商机风险诊断、赢单策略、预测复盘（线索/客户/商机/报价订单/行为五组）</td><td>自然语言查数查知识库、活动自动录入、商机查重、健康度可解释评分、行动建议一键转任务</td></tr>
+    <tr><td>服务</td><td>智能应答、工单分派、质检预警</td><td>客服机器人调用工具、录音解析生成工单小结、坐席情绪辅助</td></tr>
+    <tr><td>渠道</td><td>（渠道数据洞察）</td><td>渠道经理 Agent：智能拜访规划、策略推荐、录音总结回填</td></tr>
+    <tr><td>分析</td><td>自然语言问数、指标监控、智能归因</td><td>分析师 Agent：自然语言生成视图、因果推理找预实差根因</td></tr>
+  </table>
+  <p style="font-size:13px;color:var(--muted)">依据：help.fxiaoke.com/ee88（AI 频道，含 MCP/CLI/Chatbot 与 Agent 计费）· xiaoshouyi.com/neoai。<span class="mk ok">✅</span></p>
+
+  <div class="recap"><h4>本章要点</h4><ul>
+    <li>9 大对象 + 公海/价格政策/变更单等配套机制 = CRM 的地基；对象关系比功能清单更值得记。</li>
+    <li>销售域四个"思想产品化"：公海规则引擎（资源）、阶段推进器（过程）、行为轻记录（动作）、双轨预测（数字）。</li>
+    <li>交易域按 CPQ 复杂度台阶选深度；营销域分层获客→识别→培育→交接→归因；服务域三张网；渠道域核心是报备与返利账户。</li>
+    <li>AI 能力 = 预置角色 Agent + 开发平台，功能叙事已从"辅助记录"转向"自主执行"。</li>
+  </ul></div>
+  <details class="src"><summary>本节来源</summary><ul>
+    <li>纷享销售管理帮助中心：https://help.fxiaoke.com/94b2（用户指南 + 管理员配置指南各子目录）</li>
+    <li>纷享营销云：https://www.fxiaoke.com/ap/product-yx/ · 服务云：https://servicecloud.fxiaoke.com/</li>
+    <li>纷享渠道：https://www.fxiaoke.com/ap/product-outer/ 、/ap/qy-price-detail · 全员协同：/ap/product-inter/</li>
+    <li>销售易：/sfa（L2C/CPQ）· /yk、/qwscrm（营销/SCRM）· /prm（伙伴云）· /fxy（NeoBI）· /neoai</li>
+    <li>销售易 SFA-01~26 / Admin-01~12 文档目录：https://service.xiaoshouyi.com/ · V4.4 用户手册 PDF · 华为云旗舰版手册</li>
+  </ul></details>
+</section>
+
+<!-- ================= 第5章 生态 ================= -->
+<section class="chapter reveal" id="c5">
+  <header class="ch-head">
+    <div class="kicker">Part 5 · 生态打造</div>
+    <h2>第 5 章 · 生态的打造方式</h2>
+    <div class="ch-no">05</div>
+    <p class="lede">单点产品做不到规模化覆盖中大型企业的全部系统，生态是 SaaS 的第二增长曲线。中国 CRM 的生态打法与 Salesforce 的 AppExchange 模式很不一样——先看全景，再逐层拆。</p>
+  </header>
+  <div class="goals"><b>学习目标</b><ul>
+    <li>能画出 CRM 生态的四层结构：API → 系统集成 → 超级 App → 上下游网络；</li>
+    <li>能对比两家开放平台的 API 设计哲学；</li>
+    <li>理解"企业互联（跨租户）"与"伙伴云（单租户 PRM）"的架构取舍。</li>
+  </ul></div>
+
+  <h3 id="c5-map"><span class="sn">5.1</span>生态全景：四层连接</h3>
+  <figure class="fig">
+    <svg viewBox="0 0 960 560" role="img" aria-label="生态地图">
+      <defs><marker id="ar5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m5a"/></marker></defs>
+      <style>.m5a{fill:var(--muted)}</style>
+      <rect x="24" y="20" width="912" height="72" rx="10" class="gold-b"/>
+      <text x="44" y="46" class="sg-lbl">第 1 层 · 开放连接（对系统）</text>
+      <text x="44" y="70" class="sg-lbl-s">OpenAPI（对象级标准动作）· Webhook 事件订阅 · OAuth/SSO 单点登录 · iPaaS 连接器 · 自定义组件 · MCP/CLI</text>
+      <rect x="40" y="128" width="280" height="120" rx="10" class="sg-box"/>
+      <text x="60" y="154" class="sg-lbl">第 2 层 · 系统生态（对 IT）</text>
+      <text x="60" y="178" class="sg-lbl-s">ERP：金蝶 K3/星空 · 用友 U8/NC · SAP</text>
+      <text x="60" y="200" class="sg-lbl-s">财务（记账凭证）· HR（组织同步）· OA 待办</text>
+      <text x="60" y="222" class="sg-lbl-s">预置组件：工商/标讯/支付/电子签/物流/OCR</text>
+      <rect x="340" y="128" width="280" height="120" rx="10" class="sg-box" style="stroke:var(--navy);stroke-width:1.6"/>
+      <text x="360" y="154" class="sg-lbl">CRM 产品核心</text>
+      <text x="360" y="178" class="sg-lbl-s">标准对象模型 + L2C</text>
+      <text x="360" y="198" class="sg-lbl-s">PaaS 配置层（对象/流程/权限）</text>
+      <text x="360" y="218" class="sg-lbl-s">AI 平台（Agent/语义层）</text>
+      <text x="360" y="238" class="sg-lbl-s">多租户基座</text>
+      <rect x="640" y="128" width="280" height="120" rx="10" class="sg-box"/>
+      <text x="660" y="154" class="sg-lbl">第 3 层 · 超级 App 生态（对人）</text>
+      <text x="660" y="178" class="sg-lbl-s" style="fill:var(--fx-deep)">纷享：钉钉版 + 企微版 + 飞书版 全押</text>
+      <text x="660" y="200" class="sg-lbl-s" style="fill:var(--neo-deep)">销售易：企微 + 腾讯云 + 混元 单押</text>
+      <text x="660" y="222" class="sg-lbl-s">小程序/公众号/H5 · 腾讯会议 · WorkBuddy</text>
+      <rect x="24" y="286" width="912" height="96" rx="10" class="sg-box"/>
+      <text x="44" y="312" class="sg-lbl">第 4 层 · 上下游企业网络（对企业）—— 中国 CRM 生态的最大特色</text>
+      <rect x="44" y="326" width="430" height="42" rx="8" class="fx-b"/><text x="259" y="352" text-anchor="middle" class="sg-lbl-s">纷享：企业互联 CPaaS · 集团 1+N（伙伴=独立租户，跨租户协作）</text>
+      <rect x="490" y="326" width="426" height="42" rx="8" class="neo-b"/><text x="703" y="352" text-anchor="middle" class="sg-lbl-s">销售易：伙伴云 PRM（厂商租户内模块）+ 企微上下游触达</text>
+      <rect x="24" y="404" width="912" height="64" rx="10" class="sg-band"/>
+      <text x="44" y="430" class="sg-lbl">支撑层 · 交付与伙伴生态（对人/对公司）</text>
+      <text x="44" y="452" class="sg-lbl-s">实施方法论与项目管理 · 渠道伙伴（营销型/交付型/生态型）· 认证培训（纷享学院 / 易启大学）· 客户成功</text>
+      <line x1="480" y1="96" x2="480" y2="124" class="sg-arr" marker-end="url(#ar5a)"/>
+      <line x1="336" y1="188" x2="320" y2="188" class="sg-arr" marker-end="url(#ar5a)"/><line x1="624" y1="188" x2="640" y2="188" class="sg-arr" marker-end="url(#ar5a)"/>
+      <line x1="259" y1="282" x2="259" y2="322" class="sg-arr" marker-end="url(#ar5a)"/><line x1="703" y1="282" x2="703" y2="322" class="sg-arr" marker-end="url(#ar5a)"/>
+      <text x="480" y="500" text-anchor="middle" class="sg-sub">一句话记忆：API 连系统，超级 App 连人，企业互联连企业，伙伴体系连交付</text>
+      <text x="480" y="534" text-anchor="middle" class="sg-sub2">依据：open.fxiaoke.com · /ap/open-api · help.fxiaoke.com/ebc2（互联平台 CPaaS）· xiaoshouyi.com/paas、/prm · hiflow.tencent.com/docs/applications/xiaoshouyi</text>
+    </svg>
+    <figcaption><b>图 5-1</b> ｜ CRM 生态地图：由内向外四层连接，越外层越具中国本土特色</figcaption>
+  </figure>
+
+  <h3 id="c5-open"><span class="sn">5.2</span>开放平台：API 设计哲学对比</h3>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">OpenAPI 与 iPaaS</span><span class="duo-q">"每个对象一套标准动作" vs "四类 API 分层"</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享销客</span>
+        <ul><li>OpenAPI 覆盖 CRM 全部对象，每个对象提供 <strong>get / list / queryCount / create / update / delete / invalid / operate / attachment</strong> 等标准动作<span class="mk ok">✅</span></li>
+        <li>鉴权：应用级 corpAccessToken + 用户级授权双轨；应用免登/纷享免登；全局返回码体系</li>
+        <li>数据集成平台（iPaaS）：预设连接器，对象/字段映射、单向/双向同步；ERP 插件（SAP/金蝶 K3 Cloud/用友 U8 Cloud）；<strong>单租户独立 PostgreSQL 库</strong>支撑同步隔离<span class="mk ok">✅</span></li>
+        <li>移动端 JS API：扫一扫/选人/分享/收藏</li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易</span>
+        <ul><li>四类 API：<strong>Open API（业务）/ Bulk API（批量）/ XOQL（自研查询语言）/ 自定义 API</strong>；Meta API 暴露元数据<span class="mk ok">✅</span></li>
+        <li>OAuth2 授权码/密码模式（密码拼接 8 位安全令牌）；在 CRM 管理端"连接器"自助创建 Client_ID/Secret<span class="mk ok">✅</span></li>
+        <li>官方 SDK：neo-open-api、neo-register（npm）；自定义组件 CLI（React/Vue 组件一键发布上平台）<span class="mk ok">✅</span></li>
+        <li>第三方集成平台连接器：腾讯云 HiFlow、集简云、数环通、飞书连接器等<span class="mk ok">✅</span></li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：纷享走"对象级标准动作"路线——学一次动作集就懂全对象 API，对集成商友好；销售易走"API 分类分层"路线——批量、查询语言、元数据各就各位，更接近 Salesforce 的 API 矩阵。两家都有 iPaaS 低代码连接器，说明<strong>纯 API 时代正在让位于"配置化集成"时代</strong>。</div>
+  </div>
+
+  <h3 id="c5-super"><span class="sn">5.3</span>超级 App 路线：全押 vs 单押</h3>
+  <p>中国企业的工作入口在超级 App（钉钉/企微/飞书）手里，CRM 必须决定"住在谁家"：</p>
+  <div class="grid2">
+    <div class="mini" data-p="fx" style="border-left:4px solid var(--fx)"><h5 style="color:var(--fx-deep)">纷享：三线全押，做跨生态标准件</h5>
+      <ul><li>钉钉版 / 企微版 / 飞书版 CRM 都是成熟产品线；公众号/小程序集成引流</li>
+      <li>不站队任何协同平台 → 可触达三平台企业客户池，代价是没有独家流量倾注</li>
+      <li>2026 年新增 workbuddy / 千问办公 / 豆包工作连接器——AI 办公入口同样全押<span class="mk ok">✅</span></li></ul></div>
+    <div class="mini" data-p="neo" style="border-left:4px solid var(--neo)"><h5 style="color:var(--neo-deep)">销售易：单押腾讯，换排他性资源</h5>
+      <ul><li>企微做连接与私域（SCRM/上下游）、腾讯云做基座与出海、混元/DeepSeek 做模型</li>
+      <li>NeoAgent 与腾讯桌面智能体 WorkBuddy 通过 Connector 深度集成；发布节奏绑定腾讯云城市峰会<span class="mk ok">✅</span></li>
+      <li>获得腾讯云/企微排他性背书，代价是生态半径受腾讯体系约束</li></ul></div>
+  </div>
+
+  <h3 id="c5-net"><span class="sn">5.4</span>上下游网络：本世纪中国 CRM 最有意思的架构发明</h3>
+  <p>品牌商想连接经销商、厂商想连接服务商——但这带来一个架构难题：<strong>伙伴公司不是你的员工，不该进你的租户；可协作又必须跨企业读写数据</strong>。两家给出了教科书级的两种答案：</p>
+  <div class="duo">
+    <div class="duo-head"><span class="duo-title">跨租户互联 vs 单租户 PRM</span><span class="duo-q">网络效应与部署轻重的取舍</span></div>
+    <div class="duo-body">
+      <div class="pane fx" data-p="fx"><span class="ptag">纷享 · 企业互联 CPaaS + 集团 1+N</span>
+        <ul><li>伙伴是<strong>独立租户</strong>，通过互联平台连接：互联企信（跨企业 IM）、互联通讯录、互联角色/部门、互联账号自注册<span class="mk ok">✅</span></li>
+        <li>互联应用：数据同步、订货通、报数通、伙伴学堂、互联网盘、互联服务号、跨企业审批<span class="mk ok">✅</span></li>
+        <li>集团 1+N：统一主数据管控 + 跨租户业务协同 + 分级分权<span class="mk ok">✅</span></li>
+        <li>网络效应：下游伙伴被"链"上来后也可能整体采购纷享 → <strong>链式获客</strong></li></ul>
+      </div>
+      <div class="pane neo" data-p="neo"><span class="ptag">销售易 · 伙伴云（单租户 PRM）</span>
+        <ul><li>伙伴门户是厂商租户内的模块（Salesforce PRM 思路）：招募/登记审批、政策公告、绩效目标、数据分析<span class="mk ok">✅</span></li>
+        <li>对人的触达借助<strong>企微上下游</strong>：上下游群聊、数字渠道空间小程序——伙伴不需要买销售易<span class="mk ok">✅</span></li>
+        <li>三层架构：PaaS 底座 → 厂商管理引擎 → 经销商 PRM 门户<span class="mk third">❓第三方分析</span></li>
+        <li>部署轻、上线快；网络效应弱于跨租户模式</li></ul>
+      </div>
+    </div>
+    <div class="duo-note"><b>学习要点</b>：这组对比是全书含金量最高的架构决策案例——<strong>把"连接"做进架构（跨租户网络）还是做进功能（租户内模块+外部 IM）</strong>。前者换长期网络效应与续费粘性，后者换交付速度与低成本。没有标准答案，取决于行业链主的话语权强度。</div>
+  </div>
+
+  <h3><span class="sn">5.5</span>ISV、应用市场与交付伙伴</h3>
+  <div class="callout"><b class="t">诚实的观察</b>：两家都<strong>没有形成 Salesforce AppExchange 式的公开 ISV 应用市场</strong>（公开渠道均未见应用目录与分成政策<span class="mk third">❓</span>）。中国 CRM 的"生态"走了另一条路：纷享以 PaaS <strong>软件包跨租户复制</strong>沉淀行业/ISV 方案 + ShareHive <strong>Agent 应用市场</strong>（2026）；销售易以<strong>自定义组件生态</strong>（neo-cmp-cli）+ 大型 SI 实施伙伴为主。ISV 生态在中国被"超级 App 应用市场 + 自建 PaaS"分流了。</div>
+  <div class="grid2">
+    <div class="mini"><h5>实施方法论（标准化交付）</h5>
+      <ul><li>纷享公开四件套：计划管理（里程碑/快速上线）、需求管理（调研报告）、质量控制（交付物监控）、制度培训（现场+远程）<span class="mk ok">✅</span></li>
+      <li>数据集成平台宣称标准化交付 1-6 周上线<span class="mk ok">✅</span></li>
+      <li>纷享官方 LTO 文档还给出"一期最小闭环"上线法：先跑通线索→客户→商机→报价/订单，再逐步叠加公海回收、CPQ、信用、库存、应收<span class="mk ok">✅</span></li></ul></div>
+    <div class="mini"><h5>渠道与认证体系</h5>
+      <ul><li>纷享渠道伙伴三类：营销型（区域/行业销售网络）、交付型（实施专家）、生态合作伙伴；"建体系、留能力、拿结果"<span class="mk ok">✅</span></li>
+      <li>认证培训：纷享学院（CRM 管理员认证）vs 销售易"易启大学"（产品培训 + CRM 认证 + 期刊）<span class="mk ok">✅</span></li>
+      <li>销售易另有华为云市场等云市场上架渠道（官方手册挂载）<span class="mk ok">✅</span></li></ul></div>
+  </div>
+
+  <div class="recap"><h4>本章要点</h4><ul>
+    <li>生态四层：API 连系统（OpenAPI/iPaaS）→ 超级 App 连人（全押 vs 单押）→ 企业互联连企业（跨租户 vs PRM）→ 伙伴体系连交付。</li>
+    <li>API 设计两派：对象级标准动作（学一次懂全部）vs 分类分层 API 矩阵（Open/Bulk/XOQL/Meta）；共同趋势是配置化集成（iPaaS）。</li>
+    <li>上下游连接是架构级决策：跨租户换网络效应，租户内模块 + 外部 IM 换部署轻快。</li>
+    <li>中国 CRM 没有 AppExchange：ISV 生态被超级 App 应用市场与自建 PaaS/Agent 市场分流。</li>
+  </ul></div>
+  <details class="src"><summary>本节来源</summary><ul>
+    <li>纷享开放平台：https://open.fxiaoke.com/ 、wiki.html（对象 API 树/鉴权）· 数据集成：/ap/open-api · 互联平台：https://help.fxiaoke.com/ebc2</li>
+    <li>纷享渠道伙伴：https://www.fxiaoke.com/ap/agents · 实施服务：/ap/implement</li>
+    <li>销售易 PaaS-03~09（Open/Bulk/XOQL/自定义 API/SSO）：https://service.xiaoshouyi.com/ · CLI：https://github.com/xsy-neoui/neo-cmp-cli</li>
+    <li>销售易 HiFlow 连接器（腾讯云官方文档）：https://hiflow.tencent.com/docs/applications/xiaoshouyi</li>
+  </ul></details>
+</section>
+
+<!-- ================= 第6章 标准化设计 ================= -->
+<section class="chapter reveal" id="c6">
+  <header class="ch-head">
+    <div class="kicker">Part 6 · 标准化方法论</div>
+    <h2>第 6 章 · SaaS 标准化设计思路与具体设计</h2>
+    <div class="ch-no">06</div>
+    <p class="lede">前面五章是"它是什么"，本章回答"它为什么被这样设计"。一款商业化 CRM SaaS 的全部设计智慧，可以收束为一张标准化光谱、九项具体设计和一条通用搭建公式。</p>
+  </header>
+  <div class="goals"><b>学习目标</b><ul>
+    <li>掌握"标准开箱 → 无代码配置 → 低代码 → 定制"四层标准化光谱；</li>
+    <li>能对任意一个 CRM 功能，判断它属于哪一层、为什么这样分层；</li>
+    <li>记住通用搭建公式，并能说出中国市场的四大本土化增量。</li>
+  </ul></div>
+
+  <h3 id="c6-spec"><span class="sn">6.1</span>标准化光谱：个性化的四级收敛</h3>
+  <figure class="fig">
+    <svg viewBox="0 0 960 330" role="img" aria-label="标准化光谱">
+      <defs><linearGradient id="sp6" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#7fae8f"/><stop offset=".33" stop-color="#c9b45e"/><stop offset=".66" stop-color="#d98e4a"/><stop offset="1" stop-color="#c95f42"/>
+      </linearGradient></defs>
+      <rect x="24" y="24" width="912" height="14" rx="7" fill="url(#sp6)" opacity=".8"/>
+      <text x="24" y="18" class="sg-sub2">复制性高 · 成本低 · 规模化 ←</text>
+      <text x="936" y="18" text-anchor="end" class="sg-sub2">→ 个性化强 · 成本高 · 项目化</text>
+      <g text-anchor="middle">
+        <rect x="24" y="56" width="216" height="200" rx="10" class="sg-box2" style="stroke:#7fae8f;stroke-width:1.6"/>
+        <text x="132" y="84" class="sg-lbl">① 标准开箱</text>
+        <text x="132" y="110" class="sg-sub">装完即用的最佳实践</text>
+        <text x="132" y="136" class="sg-sub2">L2C 全对象 / 公海 / SLA</text>
+        <text x="132" y="156" class="sg-sub2">预置 BI 模板与驾驶舱</text>
+        <text x="132" y="176" class="sg-sub2">预置集成组件（工商/签/OCR）</text>
+        <text x="132" y="200" class="sg-sub2">销售易："最佳实践预置，</text>
+        <text x="132" y="216" class="sg-sub2">开箱即用"（官方原话）</text>
+        <rect x="256" y="56" width="216" height="200" rx="10" class="sg-box2" style="stroke:#c9b45e;stroke-width:1.6"/>
+        <text x="364" y="84" class="sg-lbl">② 无代码配置</text>
+        <text x="364" y="110" class="sg-sub">管理员拖拽完成差异化</text>
+        <text x="364" y="136" class="sg-sub2">自定义对象/字段/布局</text>
+        <text x="364" y="156" class="sg-sub2">审批流/工作流/阶段推进器</text>
+        <text x="364" y="176" class="sg-sub2">公海规则/查重/校验/SLA</text>
+        <text x="364" y="200" class="sg-sub2">产品把"大企业的差异性"</text>
+        <text x="364" y="216" class="sg-sub2">尽量压缩进这一层</text>
+        <rect x="488" y="56" width="216" height="200" rx="10" class="sg-box2" style="stroke:#d98e4a;stroke-width:1.6"/>
+        <text x="596" y="84" class="sg-lbl">③ 低代码 / 高代码</text>
+        <text x="596" y="110" class="sg-sub">开发者承接长尾需求</text>
+        <text x="596" y="136" class="sg-sub2">纷享：APL(Java/Groovy) + PWC</text>
+        <text x="596" y="156" class="sg-sub2">销售易：Trigger + Java/H5 + 组件</text>
+        <text x="596" y="176" class="sg-sub2">沙盒 → 制品 → 跨环境迁移</text>
+        <text x="596" y="200" class="sg-sub2">自定义 API / XOQL / RPA</text>
+        <text x="596" y="220" class="sg-sub2">AI 时代新增：Prompt/Agent 开发</text>
+        <rect x="720" y="56" width="216" height="200" rx="10" class="sg-box2" style="stroke:#c95f42;stroke-width:1.6"/>
+        <text x="828" y="84" class="sg-lbl">④ 定制实施</text>
+        <text x="828" y="110" class="sg-sub">服务费买单的项目制</text>
+        <text x="828" y="136" class="sg-sub2">实施费单列（3000/6000 元档）</text>
+        <text x="828" y="156" class="sg-sub2">行业套件 / 软件包复制</text>
+        <text x="828" y="176" class="sg-sub2">深度定制按账号+功能项报价</text>
+        <text x="828" y="200" class="sg-sub2">私有化部署 / 信创环境</text>
+        <text x="828" y="220" class="sg-sub2">数据初始化与集成交付</text>
+      </g>
+      <text x="480" y="290" text-anchor="middle" class="sg-sub2">依据：fxiaoke.com/ap/plat-Paas · developer.fxiaoke.com · xiaoshouyi.com/paas · 两家帮助中心管理员配置指南</text>
+    </svg>
+    <figcaption><b>图 6-1</b> ｜ 标准化四级光谱：SaaS 产品设计的本质是把个性需求逐级收敛，越靠左越值钱</figcaption>
+  </figure>
+  <div class="callout gold"><b class="t">核心洞察</b>：SaaS 公司的竞争力 = 把客户需求从第④层"搬"到第②层的能力。每搬一层，交付成本降一级、复制速度升一级。两家帮助中心里那些厚厚的"管理员配置指南"，就是这场搬运的战场。</div>
+
+  <h3 id="c6-design"><span class="sn">6.2</span>九项具体设计拆解</h3>
+  <p>以下每项都按"<strong>设计思路 → 两家印证 → 学习要点</strong>"展开。这是本章的正文主体，建议逐条对照第 2-5 章的实例回看。</p>
+
+  <h4>① 对象与字段可配置——元数据是唯一的真相源</h4>
+  <p><b>设计思路：</b>标准对象覆盖 80% 场景，自定义对象承接行业差异；字段、布局、校验规则全部元数据化，运行时解释执行。</p>
+  <div class="grid2"><div class="mini" data-p="fx"><b>纷享：</b>可视化对象设计器 + 界面定制（"千企千面"按角色出布局）+ 通用业务规则配置；对象定制已内置 AI 能力子项。</div>
+  <div class="mini" data-p="neo"><b>销售易：</b>可视化业务建模 + Admin 系列（校验规则/查重规则/关联关系/引用字段/主子明细）+ Meta API 暴露元数据本体。</div></div>
+  <p style="font-size:13px;color:var(--muted)">学习要点：判断配置颗粒度看三问——能否新建对象？字段级能否控权限？元数据能否被 API 读写？</p>
+
+  <h4>② 流程引擎——把组织里的"走流程"抽象成三种引擎</h4>
+  <p><b>设计思路：</b>审批流（人事审批）+ 业务流（单据流转，如商机阶段）+ 工作流/自动化（数据驱动的后台规则）三类引擎分离，覆盖企业 90% 流程需求。</p>
+  <div class="grid2"><div class="mini" data-p="fx"><b>纷享：</b>审批流、业务流、工作流、<strong>阶段推进器</strong>并列；流程后动作（无代码）+ 插件自定义函数；流程运维与效能分析（审批超时监控）。</div>
+  <div class="mini" data-p="neo"><b>销售易：</b>可视化流、工作流、自动流三类 + 事件驱动规则引擎 + 触发器 Trigger（代码级）；工作流支持对象全生命周期。</div></div>
+  <p style="font-size:13px;color:var(--muted)">学习要点：流程引擎的成熟标志不是"能配多复杂"，而是<strong>流程运维</strong>——超时监控、批量转交、版本升级时在途单据怎么办。</p>
+
+  <h4>③ 资源流转规则——公海是"销售管理制度"的产品化</h4>
+  <p><b>设计思路：</b>把销售管理的制度诉求（客户不捂死、撞单有裁决、资源可再分配）转译成五要素规则：准入、查重、保有量、回收、保护期。</p>
+  <div class="grid2"><div class="mini" data-p="fx"><b>纷享：</b>客户查重规则、归属规则、创建识别与审批、保有量上限；线索侧同构（线索池/分配/回收）；官方文档明确"公海 ≠ 客户生命周期"。</div>
+  <div class="mini" data-p="neo"><b>销售易：</b>线索/客户双公海池、分组成员可见性、循环回收；团队成员继承规则解决"流转后协作权限"的边缘情况。</div></div>
+  <p style="font-size:13px;color:var(--muted)">学习要点：这类"规则引擎型功能"最能体现 SaaS 标准化功力——同一套引擎，快消行业配出强回收，大客户行业配出长保护期。</p>
+
+  <h4>④ 权限模型——RBAC 管功能，ABAC 管数据，外部权限管企业边界</h4>
+  <p><b>设计思路：</b>见第 2.3 节四象限。标准化关键在于：权限继承 PaaS 角色体系（BI 字段级权限继承即是例证），且权限可诊断（纷享有"权限诊断与排查工具"）。</p>
+  <div class="grid2"><div class="mini" data-p="fx"><b>纷享：</b>功能权限到字段级/界面级；数据权限支持多区域、多产品线；独有<strong>外部权限体系</strong>支撑互联场景。</div>
+  <div class="mini" data-p="neo"><b>销售易：</b>官方明示 RBAC+ABAC 双模型；用户-角色-职能-数据四层 Admin 文档；团队成员继承。</div></div>
+  <p style="font-size:13px;color:var(--muted)">学习要点：权限设计的难点排序：数据权限（多维交叉）＞ 外部权限（跨企业）＞ 功能权限（成熟方案已收敛）。</p>
+
+  <h4>⑤ 版本分层与功能门控——用价格表表达产品战略</h4>
+  <p><b>设计思路：</b>版本不是功能堆砌，而是"企业成熟度"的镜像：小微版给标准流程，旗舰版解锁定制化销售流程/多语言/高级 PaaS；付费版块（订货通/服务通…）按业务域加购。</p>
+  <div class="grid2"><div class="mini" data-p="fx"><b>纷享：</b>公开价目（小微免费→企业版→营销版 + 专业/旗舰），实施费透明标价；付费应用清单逐项售卖<span class="mk warn">⚠️清单待核</span>。</div>
+  <div class="mini" data-p="neo"><b>销售易：</b>专业→企业→旗舰→无限四档（官方不公示价<span class="mk third">❓</span>）+ 云组合报价；以"易启"独立产品线承接小微，与主产品重配置形成两端。</div></div>
+  <p style="font-size:13px;color:var(--muted)">学习要点：观察一家 SaaS 的版本表，就是在读它的目标客群战略——门控放在"流程引擎"还是"分析能力"上，暴露它认为谁愿意付溢价。</p>
+
+  <h4>⑥ 行业模板——把项目经验变成可复制资产</h4>
+  <p><b>设计思路：</b>行业化三板斧：行业方案页（营销载体）→ 行业版/行业套件（产品载体）→ 行业 Know-How 进平台语义层（AI 载体）。</p>
+  <div class="grid2"><div class="mini" data-p="fx"><b>纷享：</b>快消行业专设帮助频道（拜访管理/车销引单/TPM）；行业套件 + PaaS 软件包跨租户复制；ShareHive 宣称 15 行业 Know-How<span class="mk ok">✅</span>。</div>
+  <div class="mini" data-p="neo"><b>销售易：</b>文档站单列"行业版产品"手册线；装备制造方案 = 集团架构管理 + 交付项目管理 + 选装选配 CPQ 三件套；BI 分行业分析模板<span class="mk ok">✅</span>。</div></div>
+  <p style="font-size:13px;color:var(--muted)">学习要点：行业模板的终局是"新客户 = 选模板 + 改配置"，这正是第④层（定制实施）占比下降的过程。</p>
+
+  <h4>⑦ 多端策略——一套元数据，多个壳</h4>
+  <p><b>设计思路：</b>自有端（Web/App）保完整体验，超级 App 版（企微/钉钉/飞书）保触达，小程序/H5 保轻量场景。关键是多端共用同一套对象与权限元数据，而非各自开发。</p>
+  <div class="grid2"><div class="mini" data-p="fx"><b>纷享：</b>iOS/Android/Windows/Mac 全客户端 + 三大超级 App 版 + 移动端 JS API 开放；多语言（旗舰版）。</div>
+  <div class="mini" data-p="neo"><b>销售易：</b>产品级对接企微/钉钉/飞书/腾讯会议；服务小程序；NeoUI 统一前端框架支撑自定义组件跨端。</div></div>
+  <p style="font-size:13px;color:var(--muted)">学习要点：判断多端是真一体化还是"套壳"，看<strong>离线与冲突</strong>：移动端改的数据回到 Web 端是否一致、字段级权限是否跨端生效。</p>
+
+  <h4>⑧ 集成标准化——从"写接口"到"配连接器"</h4>
+  <p><b>设计思路：</b>对象级标准动作 API（学一次懂全部）+ iPaaS 连接器（免代码集成）+ 事件订阅（准实时）+ SSO（身份打通），四级递进。</p>
+  <div class="grid2"><div class="mini" data-p="fx"><b>纷享：</b>全对象 get/list/create/update… 标准动作 + 数据集成平台（ERP 插件、双向同步、单租户独立库）+ OA 待办打通。</div>
+  <div class="mini" data-p="neo"><b>销售易：</b>Open/Bulk/XOQL/Meta 四类 API + 管理端自助连接器 + HiFlow 等第三方平台连接器 + SSO（预置上百应用认证组件）。</div></div>
+  <p style="font-size:13px;color:var(--muted)">学习要点：集成能力是中大型客户续费的隐形护栏——ERP 同步一旦跑通，替换成本极高。这也是"连接型"叙事的商业本质。</p>
+
+  <h4>⑨ AI 标准化——"预置 Agent + Agent 开发平台"双层结构</h4>
+  <p><b>设计思路：</b>把 AI 当平台层而非功能点：底层是语义层/Know-How（行业与业务词汇的机器可理解版），上层按角色预置 Agent（开箱）+ 提供构建器（自建），并引入用量计费。</p>
+  <div class="grid2"><div class="mini" data-p="fx"><b>纷享：</b>ShareHive AgentOS（语义建模 + Know-How + Agent 市场 + 计费与用量管理）；Agents 按营销/销售/服务/分析/知识五域分发。</div>
+  <div class="mini" data-p="neo"><b>销售易：</b>业务语义层 + Data Cloud 可信数据层；五类角色 Agent；Prompt/Agent Builder + Agentic RAG 开发平台。</div></div>
+  <p style="font-size:13px;color:var(--muted)">学习要点：注意与第⑤⑥条的同构性——AI 的"预置 + 自建"正是"标准功能 + PaaS"模式的重演；语义层就是 AI 时代的"行业模板"。</p>
+
+  <h3 id="c6-cn"><span class="sn">6.3</span>通用搭建公式与本土化增量</h3>
+  <figure class="fig">
+    <svg viewBox="0 0 960 560" role="img" aria-label="通用搭建公式">
+      <defs><marker id="ar6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="m6a"/></marker></defs>
+      <style>.m6a{fill:var(--muted)}</style>
+      <g text-anchor="middle">
+        <rect x="60" y="24" width="840" height="60" rx="10" class="sg-box2" style="stroke:var(--navy);stroke-width:1.5"/>
+        <text x="480" y="48" class="sg-lbl">① 标准对象模型 —— 地基</text>
+        <text x="480" y="70" class="sg-sub2">Lead / Account / Contact / Opportunity / Product·PriceBook / Quote / Contract / Order / 回款应收（中国扩展）</text>
+        <rect x="60" y="106" width="840" height="60" rx="10" class="sg-box2"/>
+        <text x="480" y="130" class="sg-lbl">② L2C 业务流程 —— 主线</text>
+        <text x="480" y="152" class="sg-sub2">市场获客 → 线索分配验证 → 客户/公海 → 商机阶段 → CPQ → 订单合同 → 应收回款（外环：营销 / 服务 / 渠道）</text>
+        <rect x="60" y="188" width="840" height="60" rx="10" class="sg-box2" style="stroke:var(--gold)"/>
+        <text x="480" y="212" class="sg-lbl">③ 平台配置层 —— 可配置性</text>
+        <text x="480" y="234" class="sg-sub2">自定义对象/字段/布局 · 流程引擎 · 权限 RBAC+ABAC · 自动化规则 · 低代码 · 集成 · BI · AI 语义层</text>
+        <rect x="60" y="270" width="840" height="60" rx="10" class="sg-box2"/>
+        <text x="480" y="294" class="sg-lbl">④ 版本分层 —— 商业化</text>
+        <text x="480" y="316" class="sg-sub2">小微/标准/旗舰门控 ＋ 业务域版块加购 ＋ 实施费单列 ＋ 私有化选项</text>
+        <rect x="60" y="352" width="840" height="60" rx="10" class="sg-box2"/>
+        <text x="480" y="376" class="sg-lbl">⑤ 行业模板 —— Know-How 沉淀</text>
+        <text x="480" y="398" class="sg-sub2">行业方案页 → 行业版/套件/软件包复制 → 行业 BI 模板 → 行业语义层（AI）</text>
+        <rect x="60" y="434" width="840" height="60" rx="10" class="sg-box2" style="stroke:var(--navy);stroke-width:1.5"/>
+        <text x="480" y="458" class="sg-lbl">⑥ 生态扩展 —— 第二增长曲线</text>
+        <text x="480" y="480" class="sg-sub2">OpenAPI/iPaaS → 超级 App 分发 → 上下游企业网络（互联/PRM）→ 实施与渠道伙伴 → Agent 市场</text>
+      </g>
+      <line x1="480" y1="84" x2="480" y2="102" class="sg-arr" marker-end="url(#ar6a)"/><line x1="480" y1="166" x2="480" y2="184" class="sg-arr" marker-end="url(#ar6a)"/>
+      <line x1="480" y1="248" x2="480" y2="266" class="sg-arr" marker-end="url(#ar6a)"/><line x1="480" y1="330" x2="480" y2="348" class="sg-arr" marker-end="url(#ar6a)"/>
+      <line x1="480" y1="412" x2="480" y2="430" class="sg-arr" marker-end="url(#ar6a)"/>
+      <rect x="60" y="512" width="840" height="36" rx="8" class="gold-b"/>
+      <text x="480" y="535" text-anchor="middle" class="sg-lbl-s">中国本土化四大增量：回款/合同财务语义 · 上下游企业网络 · 超级 App 分发 · 信创与数据合规</text>
+    </svg>
+    <figcaption><b>图 6-2</b> ｜ 通用搭建公式：任何一款标准化 CRM SaaS 都能沿这六层对照拆解，本书每一章即对应其中一层</figcaption>
+  </figure>
+  <div class="grid2">
+    <div class="mini"><h5>回款/合同财务语义</h5>赊销 + 经销商体系 → 合同变更单、三类立应收、回款计划核销、收入确认，成为标配对象链。</div>
+    <div class="mini"><h5>上下游企业网络</h5>品牌链主话语权强 → 企业互联（跨租户）与伙伴云（PRM）两种架构，均远重于 Salesforce 的 Partner 模块。</div>
+    <div class="mini"><h5>超级 App 分发</h5>协同办公平台垄断工作入口 → 企微/钉钉/飞书版成为标配产品线，会话存档等深度集成独家于中国。</div>
+    <div class="mini"><h5>信创与数据合规</h5>国央企采购与数据出境监管 → 信创全栈适配、等保/ISO/SOC 证书、境内外数据中心布局成为投标硬指标。</div>
+  </div>
+
+  <div class="recap"><h4>本章要点（全书收束）</h4><ul>
+    <li>标准化光谱四层：开箱 → 配置 → 低代码 → 定制；SaaS 竞争力 = 把需求从右往左搬的能力。</li>
+    <li>九项设计各有一条"设计思路"和一条"学习要点"，其中流程引擎的成熟标志是流程运维，权限的难点是数据与跨企业，AI 是配置模式的重演。</li>
+    <li>通用搭建公式六层：对象 → 流程 → 配置 → 版本 → 行业 → 生态；用它可以去拆解任何一款 SaaS 产品（包括非 CRM）。</li>
+    <li>中国增量四处：回款语义、上下游网络、超级 App、信创合规。</li>
+  </ul></div>
+  <details class="src"><summary>本节来源</summary><ul>
+    <li>标准化四层证据链同第 2-5 章各节来源</li>
+    <li>纷享 PaaS「模板管理与业务插件」「环境管理」：https://help.fxiaoke.com/c449</li>
+    <li>销售易文档站"行业版产品"线：doc.xiaoshouyi.com（目录公开）· 装备制造方案：xiaoshouyi.com/large_equipment_2</li>
+    <li>方法论框架（Salesforce 锚点 + 公式提炼）为本次调研综合分析，非任何一家官方表述</li>
+  </ul></details>
+</section>
+
+<!-- ================= 附录 ================= -->
+<section class="chapter reveal" id="appx">
+  <header class="ch-head">
+    <div class="kicker">Appendix · 附录</div>
+    <h2>附录 · 术语 / 对照 / 来源 / 自测</h2>
+    <div class="ch-no">A-D</div>
+    <p class="lede">全书工具箱：术语表随查随用（正文中的虚线词点击即弹出同款解释）、双产品功能对照总表、来源清单与学习自测。</p>
+  </header>
+
+  <h3 id="gl"><span class="sn">附录 A</span>术语表</h3>
+  <div id="glossaryList"></div>
+
+  <h3 id="ct"><span class="sn">附录 B</span>双产品功能对照总表</h3>
+  <table class="tbl">
+    <tr><th style="width:13%">维度</th><th>纷享销客 <span class="tag-fx">FX</span></th><th>销售易 <span class="tag-neo">Neo</span></th></tr>
+    <tr><td><b>定位叙事</b></td><td>连接型 CRM → Agentic CRM（AI 原生）</td><td>营销服一体化 → AI CRM 2.0（NeoAgent）</td></tr>
+    <tr><td><b>目标客群</b></td><td>大中型 B2B（宣称 7000+<span class="mk warn">⚠️</span>）</td><td>中大型/复杂业务（6000+，数百家 500 强）</td></tr>
+    <tr><td><b>定价策略</b></td><td>公开价目漏斗 + 版块加购 + 实施费标价</td><td>询价制 + 「易启」独立小微产品线</td></tr>
+    <tr><td><b>销售云</b></td><td>LTO 六阶段、阶段推进器、公海、CPQ（销售 BOM/价格政策）</td><td>L2C 全链、销售阶段推退、双公海池、选装选配 CPQ、业绩拆分</td></tr>
+    <tr><td><b>营销云</b></td><td>营销通八大场景、CDP、SDR Agent、出海营销包</td><td>营销云 + 企微 SCRM（活码/会话存档/SOP）、腾讯 DMP 回流</td></tr>
+    <tr><td><b>服务云</b></td><td>服务通 12 模块、IoT 设备监测、备件 SBOM、服务商协同</td><td>服务云 + 现场服务云、甘特图派工、返修寄修、SLA</td></tr>
+    <tr><td><b>渠道域</b></td><td>代理通/订货通/报数通/TPM；<b>企业互联（跨租户）</b></td><td>伙伴云 PRM + <b>企微上下游</b>（单租户模块）</td></tr>
+    <tr><td><b>协同办公</b></td><td>企信（跨企业 IM）、客群、日志/审批关联 CRM</td><td>企微侧边栏直达业务、腾讯会议集成</td></tr>
+    <tr><td><b>BI 分析</b></td><td>七大场景、驾驶舱、拼表、字段级 BI 权限</td><td>NeoBI 四形态、数据穿透、嵌入式 BI</td></tr>
+    <tr><td><b>数据平台</b></td><td>BI 智能分析平台</td><td><b>独立 CDP（Data Cloud）</b>+ 指标平台</td></tr>
+    <tr><td><b>AI 平台</b></td><td>ShareHive AgentOS（语义建模 + Know-How + Agent 市场），多模型开放</td><td>NeoAgent 2.0（业务语义层 + Data Cloud），腾讯混元/DeepSeek</td></tr>
+    <tr><td><b>PaaS</b></td><td>沙盒 + 更改集 + 软件包跨租户复制；APL（Java/Groovy）+ PWC</td><td>aPaaS：Trigger + Java/H5 + 组件 CLI；Open/Bulk/XOQL/Meta 四类 API</td></tr>
+    <tr><td><b>权限</b></td><td>多维多级（字段级）+ <b>外部权限体系</b> + 权限诊断工具</td><td><b>RBAC + ABAC 双模型</b> + 团队成员继承</td></tr>
+    <tr><td><b>合规部署</b></td><td>SOC 1/2、ISO 42001、信创全栈（麒麟/飞腾/金仓/东方通）</td><td>ISO 22301、CCRC；腾讯云基座；新加坡/印尼/法兰克福数据中心</td></tr>
+    <tr><td><b>生态路线</b></td><td>钉钉/企微/飞书三线全押；iPaaS 独立产品；伙伴四类</td><td>腾讯单点深耕；HiFlow 等连接器；华为云市场上架</td></tr>
+  </table>
+
+  <h3 id="srcs"><span class="sn">附录 C</span>信息来源清单</h3>
+  <div class="grid2">
+    <div class="mini"><h5>纷享销客 · 一手</h5>
+      <ul>
+        <li><a href="https://www.fxiaoke.com/" target="_blank" rel="noopener">官网首页/产品功能总览</a></li>
+        <li><a href="https://help.fxiaoke.com/" target="_blank" rel="noopener">帮助中心（22 频道）</a>，重点：<a href="https://help.fxiaoke.com/94b2/eebd/a0e3" target="_blank" rel="noopener">LTO 业务流程总览</a>、<a href="https://help.fxiaoke.com/c449" target="_blank" rel="noopener">PaaS 频道</a>、<a href="https://help.fxiaoke.com/ee88" target="_blank" rel="noopener">AI 频道</a>、<a href="https://help.fxiaoke.com/ebc2" target="_blank" rel="noopener">互联平台 CPaaS</a></li>
+        <li><a href="https://open.fxiaoke.com/open/openindex/wiki.html" target="_blank" rel="noopener">开放平台 wiki（对象 API 树）</a> · <a href="https://developer.fxiaoke.com/home/" target="_blank" rel="noopener">开发者站</a></li>
+        <li><a href="https://www.fxiaoke.com/ap/product-price/" target="_blank" rel="noopener">价格页</a> · <a href="https://www.fxiaoke.com/ap/solutions" target="_blank" rel="noopener">解决方案</a> · <a href="https://www.fxiaoke.com/crm/securecenter" target="_blank" rel="noopener">信任中心</a></li>
+      </ul></div>
+    <div class="mini"><h5>销售易 · 一手</h5>
+      <ul>
+        <li><a href="https://www.xiaoshouyi.com/" target="_blank" rel="noopener">官网（产品矩阵 14 页）</a>：/sfa /yk /qwscrm /prm /xcy /fxy /paas /cdp /neoai /100949-2</li>
+        <li><a href="https://service.xiaoshouyi.com/" target="_blank" rel="noopener">自助服务站</a>（SFA-01~26 / Admin-01~12 / PaaS-01~09 文档目录）</li>
+        <li>官方《用户操作手册 V4.4》（xiaoshouyi.com/wp-content，112 页 PDF）</li>
+        <li>华为云市场《销售易 CRM 用户操作手册》2023（旗舰版，46 页 PDF）</li>
+        <li><a href="https://github.com/xsy-neoui/neo-cmp-cli" target="_blank" rel="noopener">官方组件 CLI（GitHub）</a> · <a href="https://hiflow.tencent.com/docs/applications/xiaoshouyi" target="_blank" rel="noopener">腾讯云 HiFlow 连接器文档</a></li>
+      </ul></div>
+    <div class="mini"><h5>市场格局 · 二手（转引）</h5>
+      <ul>
+        <li>IDC《中国 CRM SaaS 市场跟踪报告》2025H1/H2（界面新闻等转引）</li>
+        <li>腾讯控股销售易（东方财富/中国经营报 2025-02）</li>
+        <li>纷享销客 7500 万美元融资（21财经 2024-08）</li>
+        <li>销售易 NeoAgent 2.0 发布（知乎专栏 2026-08）</li>
+      </ul></div>
+    <div class="mini"><h5>调研方法说明</h5>
+      <ul>
+        <li>调研时间 2026-10-06，仅公开页面、未登录</li>
+        <li>销售易 help/open 文档站本环境不可达，相关结论以官方手册与目录交叉补齐</li>
+        <li>完整三份研究笔记见 <code>research/</code> 目录</li>
+      </ul></div>
+  </div>
+
+  <h3 id="chk"><span class="sn">附录 D</span>学习自测清单（可勾选，自动保存）</h3>
+  <ul class="chk" id="chkList">
+    <li><label><input type="checkbox" id="k1">能说出 CRM 经营的三样东西：客户资产、销售过程、回款兑现</label></li>
+    <li><label><input type="checkbox" id="k2">能默画 9 大标准对象 ER 图（图 4-1），说清对象间的强/弱关联</label></li>
+    <li><label><input type="checkbox" id="k3">能画出 L2C 六阶段泳道图，并给每个阶段配"对象 + 角色 + 规则"</label></li>
+    <li><label><input type="checkbox" id="k4">能背出公海五要素：准入、查重、保有量、回收、保护期</label></li>
+    <li><label><input type="checkbox" id="k5">能解释线索状态机与"先查重再建档"的原因</label></li>
+    <li><label><input type="checkbox" id="k6">能说清商机阶段推进器的可配置项（停留时长/审批/进入完成条件/跳过/多套流程）</label></li>
+    <li><label><input type="checkbox" id="k7">能区分价目表、价格政策、可售范围三个概念</label></li>
+    <li><label><input type="checkbox" id="k8">能说出订单四种成交模式与"框架合同分批执行"的适用场景</label></li>
+    <li><label><input type="checkbox" id="k9">能解释三类立应收（周期性/合约/结算）及其对应业务</label></li>
+    <li><label><input type="checkbox" id="k10">能画出 CRM SaaS 六层架构，并指出两家的数据层差异</label></li>
+    <li><label><input type="checkbox" id="k11">能给出"真 PaaS"的三个判据：自定义对象、沙盒与制品迁移、Meta API</label></li>
+    <li><label><input type="checkbox" id="k12">能画出权限四象限：功能/数据/共享协作/外部跨企业</label></li>
+    <li><label><input type="checkbox" id="k13">能对比两家开放 API 设计：对象级标准动作 vs 四类 API 分层</label></li>
+    <li><label><input type="checkbox" id="k14">能分析企业互联（跨租户）与伙伴云（PRM）的架构取舍与网络效应差异</label></li>
+    <li><label><input type="checkbox" id="k15">能画出标准化四级光谱，并解释"SaaS 竞争力 = 把需求从右往左搬"</label></li>
+    <li><label><input type="checkbox" id="k16">能复述通用搭建公式六层，并对应本书六章</label></li>
+    <li><label><input type="checkbox" id="k17">能说出中国 CRM 四大本土化增量：回款语义、上下游网络、超级 App、信创合规</label></li>
+    <li><label><input type="checkbox" id="k18">能用这套公式独立拆解第三款 CRM 产品（如 Salesforce/HubSpot 的中文资料）</label></li>
+  </ul>
+
+  <footer>
+    《CRM SaaS 产品学习书》v1.0 · 2026-10 ｜ 双案例：纷享销客 × 销售易<br>
+    事实依据以官方帮助中心/手册为准，信息截至 2026-10-06；⚠️/❓ 标注项请以最新官方文档复核。<br>
+    单文件离线可读 · 深浅色与阅读视角偏好自动保存
+  </footer>
+</section>
+
+<style>
+/* JS 加载后才隐藏待入场元素；无 JS 环境直接可见 */
+.reveal{opacity:1;transform:none}
+.js .reveal{opacity:0;transform:translateY(14px)}
+.js .reveal.in{opacity:1;transform:none}
+</style>
+
+<script>
+(function(){
+function init(){
+"use strict";
+var doc=document, root=doc.documentElement;
+root.classList.add('js');
+
+/* ---------- 术语表数据 ---------- */
+var TERMS={
+ crm:{t:"CRM",en:"Customer Relationship Management",g:1,d:"客户关系管理。通过数字化手段经营客户资产、管理销售过程、兑现回款的企业级系统，本书语境下特指 B2B SaaS 形态。"},
+ sfa:{t:"SFA",en:"Sales Force Automation",g:1,d:"销售自动化，CRM 的内核：线索、客户、商机、行为的过程管理与自动化。Gartner SFA 魔力象限即评此细分。"},
+ l2c:{t:"L2C",en:"Lead to Cash",g:1,d:"从线索到回款的端到端主业务流程。销售易采用此称呼，覆盖订单后的回款环节。"},
+ lto:{t:"LTO",en:"Lead to Order",g:1,d:"纷享销客官方对主流程的称呼：从销售线索到销售订单的六个阶段（见第 3 章），订单后延伸至应收管理。"},
+ lead:{t:"线索",en:"Lead",g:1,d:"未验证的潜在销售机会。与客户分离存放，经清洗、评分、培育后再转化为客户+联系人+商机。"},
+ oppo:{t:"商机",en:"Opportunity",g:1,d:"有明确成交可能、分阶段推进的销售过程容器，承载金额、赢率、明细与预测，是 CRM 价值密度最高的对象。"},
+ hai:{t:"公海",en:"Public Pool",g:1,d:"客户/线索公共资源池。销售从公海领取客户，超期未跟进被规则收回，供他人再领取——防止资源被'捂死'。五要素：准入、查重、保有量、回收、保护期。"},
+ juecelian:{t:"决策链",en:"Decision Chain",g:1,d:"客户方从使用者到决策者的角色关系图谱（权力地图），复杂 B2B 成交的关键分析工具。两家均有模板化配置。"},
+ cpq:{t:"CPQ",en:"Configure-Price-Quote",g:1,d:"配置-定价-报价：复杂/非标产品从选配到出报价单的流程引擎，链条为产品→属性/BOM→可售范围→价目表→报价单。"},
+ bom:{t:"销售 BOM",en:"Bill of Materials",g:1,d:"产品的销售视角物料/配置清单，支持选装选配后再核价，是装备制造等行业 CPQ 的核心。"},
+ huikuan:{t:"回款",en:"Payment Collection",g:2,d:"客户实际付款的记录与核销。中国 CRM 的特色重点对象：合同签了不算成，钱到账才算成。"},
+ yingshou:{t:"应收",en:"Receivable",g:2,d:"应向客户收取的款项。纷享定义三类立应收：周期性（订阅计费）、合约（按合同/订单）、结算（按交付结果）。"},
+ pricebook:{t:"价目表",en:"Price Book",g:2,d:"产品基准价格的载体，与'价格政策'（折扣/减价/买赠等让利规则）和'可售范围'（谁能卖什么）三分离。"},
+ baoyouliang:{t:"保有量",en:"Holding Limit",g:2,d:"单个销售可持有的客户/线索数量上限，防止资源沉淀在个人手中，是公海规则的核心参数。"},
+ bgd:{t:"变更单",en:"Change Order",g:2,d:"合同/客户等关键数据修改的管控单据：生成→编辑→审批，保留完整版本痕迹。销售易有客户变更单与合同变更单。"},
+ sla:{t:"SLA",en:"Service Level Agreement",g:1,d:"服务等级协议：工单响应/解决时限承诺，超时升级。服务云工单引擎的规则核心。"},
+ sdr:{t:"SDR",en:"Sales Development Rep",g:1,d:"销售开发代表：专职清洗与培育线索、把合格线索交接给销售的角色；营销云为其配工作台与 Agent。"},
+ funnel:{t:"销售漏斗",en:"Sales Funnel",g:1,d:"按商机阶段统计数量与金额的转化视图，配合阶段转化率、滞留分析做过程管理。"},
+ metadata:{t:"元数据驱动",en:"Metadata-driven",g:3,d:"客户的自定义配置（对象/字段/布局/流程）以元数据存储、运行时解释执行，而非改代码。SaaS 可配置性的架构根基。"},
+ multitenant:{t:"多租户",en:"Multi-tenancy",g:3,d:"一套系统服务多家客户（租户）、数据逻辑隔离的 SaaS 架构基座。纷享宣称单租户独立 PostgreSQL 库的加强隔离。"},
+ paas:{t:"PaaS",en:"Platform as a Service",g:3,d:"平台层：让客户/伙伴在 CRM 之上低代码/高代码构建应用。判据：自定义对象、沙盒与制品迁移、元数据 API。"},
+ apaas:{t:"aPaaS",en:"Application PaaS",g:3,d:"销售易对自家平台层的称呼（Neo-Platform）：应用开发 + NeoUI 前端 + 集成开发 + 企业级基座四板块。"},
+ sandbox:{t:"沙盒",en:"Sandbox",g:3,d:"生产环境的镜像测试环境，配置与开发先在沙盒验证再发布。纷享明示沙盒+更改集机制，对标 Salesforce。"},
+ changeset:{t:"更改集",en:"Change Set",g:3,d:"把沙盒中的配置打包、一键部署到正式环境的发布机制；纷享的软件包还能跨租户复制，沉淀行业方案。"},
+ rbac:{t:"RBAC",en:"Role-Based Access Control",g:3,d:"基于角色的权限模型：角色×资源×动作决定'能用什么功能'。CRM 功能权限的通用解。"},
+ abac:{t:"ABAC",en:"Attribute-Based Access Control",g:3,d:"基于属性的权限模型：按组织/区域/业务线等属性动态圈定数据范围。销售易官方明示 RBAC+ABAC 双模型并用。"},
+ xoql:{t:"XOQL",g:3,d:"销售易自研查询语言，为其四类 API 之一，用于复杂数据查询——对标 Salesforce 的 SOQL。"},
+ openapi:{t:"OpenAPI",g:3,d:"开放 API。纷享为每个业务对象提供 get/list/create/update 等标准动作；销售易分 Open/Bulk/XOQL/自定义四类。"},
+ webhook:{t:"Webhook",g:3,d:"事件订阅推送机制：系统事件发生时主动回调第三方 URL，与轮询式 API 互补，实现准实时集成。"},
+ oauth:{t:"OAuth 2.0",g:3,d:"开放授权标准。两家开放平台均采用：授权码模式（带回调）为主，销售易密码模式需拼接 8 位安全令牌。"},
+ sso:{t:"SSO",en:"Single Sign-On",g:3,d:"单点登录：企业统一身份一次登录访问多个系统。CRM 集成 ERP/OA 的身份打通件，两家均预置认证组件。"},
+ ipaas:{t:"iPaaS",en:"Integration PaaS",g:3,d:"集成平台即服务：预设连接器+可视化字段映射+同步策略，把'写接口'变成'配连接'。纷享数据集成平台、销售易集成开发平台属此类。"},
+ cdp:{t:"CDP",en:"Customer Data Platform",g:3,d:"客户数据平台：多源数据接入、OneID 身份统一、标签画像、自动化运营。销售易将其抬升为独立 Data Cloud 层。"},
+ oneid:{t:"OneID",g:3,d:"同一客户在不同渠道（广告/官网/企微/CRM）的身份归一标识，CDP 打通全渠道数据的前提。"},
+ bi:{t:"BI",en:"Business Intelligence",g:3,d:"商业智能分析：报表、统计图、驾驶舱、自助分析。两家均内置且与业务权限打通，销售易强调'数据穿透'回业务操作。"},
+ iot:{t:"IoT 接入",g:3,d:"设备物联网数据接入服务云：实时监测预警、按使用量触发预防性维护，装备制造售后场景的差异化能力。"},
+ sbom:{t:"SBOM",en:"Service BOM",g:3,d:"服务视角物料清单：备件快速定位与成本追踪的数据基础（纷享服务云）。"},
+ erp:{t:"ERP",g:3,d:"企业资源计划系统。CRM 集成的第一优先对象：订单转生产单、库存同步、回款对账。两家均有预制连接器（金蝶/用友/SAP）。"},
+ prm:{t:"PRM",en:"Partner Relationship Management",g:4,d:"伙伴关系管理：厂商对经销商/代理商的准入、授权、报备、订货、返利、对账管理。销售易'伙伴云'即单租户 PRM 模块。"},
+ dms:{t:"DMS",en:"Dealer Management System",g:4,d:"经销商管理系统。纷享渠道管理频道的子域，与订货通、代理通并列。"},
+ tpm:{t:"TPM",en:"Trade Promotion Management",g:4,d:"贸易促销管理：渠道促销费用的方案→举证→检核→核销闭环，快消行业深度场景（纷享）。"},
+ scrm:{t:"SCRM",en:"Social CRM",g:4,d:"社交化客户运营：基于企业微信的活码、侧边栏、会话存档、朋友圈运营等，中国营销域的特色筹码。"},
+ ems:{t:"EMS / CMS",en:"Event/Content Marketing",g:4,d:"活动营销与内容营销：会议直播管理与 AI 内容创作分发，纷享营销通八大场景之二。"},
+ isv:{t:"ISV",en:"Independent Software Vendor",g:4,d:"独立软件开发商：在平台上开发并分发应用的第三方。两家公开 ISV 应用市场均不发达（见 5.5 的诚实观察）。"},
+ si:{t:"SI",en:"System Integrator",g:4,d:"系统集成商：负责 CRM 实施交付的伙伴类型之一（纷享'交付型伙伴'）。"},
+ saas:{t:"SaaS",en:"Software as a Service",g:4,d:"软件即服务：多租户订阅制、按人/年计费、厂商托管升级。本书研究对象的产品形态。"},
+ arr:{t:"ARR",en:"Annual Recurring Revenue",g:4,d:"年度经常性收入，SaaS 公司的核心经营指标（销售易称其 AI 产品 ARR 同比增长 10 倍+，❓二手口径）。"},
+ dengbao:{t:"等保三级",g:4,d:"网络安全等级保护三级：中国面向非银机构的最高常见级别安全认证，中大型/国央企采购的硬指标，两家均持有。"},
+ xinchuang:{t:"信创",g:4,d:"信息技术应用创新：芯片/OS/数据库/中间件的国产化替代。纷享全栈适配（飞腾/麒麟/金仓/东方通）以攻国央企场景。"},
+ mqc:{t:"魔力象限",en:"Magic Quadrant",g:4,d:"Gartner 的细分市场四象限评估。销售易连续多年入选 SFA 魔力象限，是其核心国际背书（⚠️入选次数口径不一）。"},
+ sharehive:{t:"ShareHive 蜂巢",en:"AgentOS",g:4,d:"纷享销客 2026 年发布的 AI 底座：五层语义建模 + 三层 Know-How + Agent 应用市场 + 用量计费，支撑 Agentic CRM。"},
+ neoagent:{t:"NeoAgent 2.0",g:4,d:"销售易 2026 年发布的 AI 原生 CRM 智能体体系：业务语义层 + Data Cloud 可信数据层之上的五类角色 Agent。"}
+};
+
+/* ---------- 渲染术语表 ---------- */
+var gNames=["","业务与流程","对象与交易","平台与技术","生态与运营"];
+var wrap=doc.getElementById('glossaryList');
+if(wrap){
+  for(var g=1;g<=4;g++){
+    var sec=doc.createElement('div');sec.className='gloss-group';
+    var h=doc.createElement('h4');h.textContent=gNames[g];sec.appendChild(h);
+    var gd=doc.createElement('div');gd.className='gloss';
+    Object.keys(TERMS).forEach(function(k){
+      var t=TERMS[k];if(t.g!==g)return;
+      var gi=doc.createElement('div');gi.className='gi';
+      gi.innerHTML='<b>'+t.t+'</b>'+(t.en?'<span class="en">'+t.en+'</span>':'')+'<p>'+t.d+'</p>';
+      gd.appendChild(gi);
+    });
+    sec.appendChild(gd);wrap.appendChild(sec);
+  }
+}
+
+/* ---------- 术语弹层 ---------- */
+var pop=doc.getElementById('pop');
+function hidePop(){pop.hidden=true;}
+function showPop(btn){
+  var t=TERMS[btn.dataset.term];if(!t)return;
+  pop.innerHTML='<b>'+t.t+(t.en?' · '+t.en:'')+'</b><br>'+t.d;
+  pop.hidden=false;
+  var r=btn.getBoundingClientRect(),sx=window.scrollX,sy=window.scrollY;
+  var left=Math.min(Math.max(8,r.left+sx-20),sx+doc.documentElement.clientWidth-350);
+  pop.style.left=left+'px';
+  if(r.bottom+sy+170>sy+window.innerHeight){pop.style.top=(r.top+sy-pop.offsetHeight-10)+'px';}
+  else{pop.style.top=(r.bottom+sy+8)+'px';}
+}
+doc.addEventListener('click',function(e){
+  var t=e.target.closest?e.target.closest('.term'):null;
+  if(t){showPop(t);return;}
+  if(!pop.hidden&&!e.target.closest('#pop'))hidePop();
+});
+doc.addEventListener('keydown',function(e){if(e.key==='Escape')hidePop();});
+window.addEventListener('scroll',function(){if(!pop.hidden)hidePop();},{passive:true});
+
+/* ---------- 视角切换 ---------- */
+var seg=doc.getElementById('seg');
+function setMode(m,save){
+  doc.body.classList.remove('mode-fx','mode-neo','mode-both');
+  doc.body.classList.add('mode-'+m);
+  Array.prototype.forEach.call(seg.querySelectorAll('button'),function(b){b.classList.toggle('on',b.dataset.mode===m);});
+  if(save){try{localStorage.setItem('crmViewMode',m);}catch(e){}}
+}
+seg.addEventListener('click',function(e){var b=e.target.closest('button');if(b)setMode(b.dataset.mode,true);});
+try{var m0=localStorage.getItem('crmViewMode');if(m0)setMode(m0,false);}catch(e){}
+
+/* ---------- 深浅色 ---------- */
+var themeBtn=doc.getElementById('themeBtn');
+themeBtn.addEventListener('click',function(){
+  var dark=root.classList.toggle('dark');
+  try{localStorage.setItem('crmTheme',dark?'dark':'light');}catch(e){}
+});
+try{if(localStorage.getItem('crmTheme')==='dark')root.classList.add('dark');}catch(e){}
+
+/* ---------- 进度条 ---------- */
+var bar=doc.getElementById('bar');
+function updBar(){
+  var h=doc.documentElement.scrollHeight-window.innerHeight;
+  bar.style.width=(h>0?(window.scrollY/h*100):0)+'%';
+}
+window.addEventListener('scroll',updBar,{passive:true});updBar();
+
+/* ---------- 目录高亮（scroll spy） ---------- */
+var links=Array.prototype.slice.call(doc.querySelectorAll('#nav > li > a'));
+var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+var spy=new IntersectionObserver(function(es){
+  es.forEach(function(en){
+    if(en.isIntersecting){
+      links.forEach(function(a){a.classList.remove('act');});
+      var a=map[en.target.id];if(a)a.classList.add('act');
+    }
+  });
+},{rootMargin:'-30% 0px -60% 0px'});
+['c0','c1','c2','c3','c4','c5','c6','appx'].forEach(function(id){
+  var el=doc.getElementById(id);if(el)spy.observe(el);
+});
+
+/* ---------- 入场动效 ---------- */
+var rev=new IntersectionObserver(function(es){
+  es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');rev.unobserve(en.target);}});
+},{threshold:.06});
+Array.prototype.forEach.call(doc.querySelectorAll('.reveal'),function(el){rev.observe(el);});
+
+/* ---------- 自测清单 ---------- */
+var boxes=Array.prototype.slice.call(doc.querySelectorAll('#chkList input'));
+function loadChk(){
+  var saved=[];try{saved=JSON.parse(localStorage.getItem('crmChk')||'[]');}catch(e){}
+  boxes.forEach(function(b){
+    if(saved.indexOf(b.id)>-1){b.checked=true;b.closest('li').classList.add('done');}
+  });
+}
+boxes.forEach(function(b){
+  b.addEventListener('change',function(){
+    b.closest('li').classList.toggle('done',b.checked);
+    try{localStorage.setItem('crmChk',JSON.stringify(boxes.filter(function(x){return x.checked;}).map(function(x){return x.id;})));}catch(e){}
+  });
+});
+loadChk();
+
+/* ---------- 移动端目录 ---------- */
+var menuBtn=doc.getElementById('menuBtn');
+menuBtn.addEventListener('click',function(){doc.body.classList.toggle('side-open');});
+doc.getElementById('nav').addEventListener('click',function(e){
+  if(e.target.closest('a'))doc.body.classList.remove('side-open');
+});
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+})();
+</script>
+
+</div>
+</main>
+</div>
+<div id="pop" hidden></div>
+</body>
+</html>
